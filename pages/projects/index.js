@@ -4,8 +4,8 @@ import React from "react"
 import PropTypes from "prop-types"
 import Head from "next/head"
 
-import withAuth from "../lib/withAuth"
-import withLayout from "../lib/withLayout"
+import withAuth from "../../lib/withAuth"
+import withLayout from "../../lib/withLayout"
 
 class Projects extends React.Component {
   static propTypes = {

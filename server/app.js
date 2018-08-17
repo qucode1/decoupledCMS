@@ -84,6 +84,11 @@ try {
 
     server.use("/user", privateRouter)
 
+    server.get("/projects/:projectId", (req, res) => {
+      const params = { projectId: req.params.projectId }
+      return app.render(req, res, "/projects/project", params)
+    })
+
     server.get("*", (req, res) => handle(req, res))
 
     // starting express server

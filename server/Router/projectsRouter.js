@@ -1,4 +1,5 @@
 const express = require("express")
+const mongoose = require("mongoose")
 const projectsRouter = express.Router({ mergeParams: true })
 
 const { createModel } = require("../utils/dynamicSchema")
@@ -70,6 +71,7 @@ projectsRouter.patch("/:projectId", isOwner, async (req, res) => {
 
 projectsRouter.post("/add", isOwner, async (req, res) => {
   try {
+    console.log(`/projects/add req`, req.body)
     const projectId = new mongoose.Types.ObjectId()
     await Promise.all([
       User.findOneAndUpdate(
@@ -88,6 +90,28 @@ projectsRouter.post("/add", isOwner, async (req, res) => {
     res.json({
       data: {
         project: newProject
+      }
+    })
+  } catch (err) {
+    UnexpectedRoutingError(err, req, res)
+  }
+})
+
+projectsRouter.delete("/:projectId/delete", isOwner, async (req, res) => {
+  try {
+    const userCreatedModels = await UserCreatedModel.find({
+      project: req.params.ObjectId
+    })
+    for (const userCreatedModel of userCreatedModels) {
+      const { name, fields, options } = userCreatedModel
+      const Model = createModel(name, fields, options)
+      await Model.deleteMany({ project: req.params.projectId })
+    }
+    await UserCreatedModel.deleteMany({ project: req.params.ObjectId })
+    await Project.findByIdAndRemove({ _id: req.params.projectId })
+    res.status(200).json({
+      data: {
+        message: "Project, Models and Documents have been deleted."
       }
     })
   } catch (err) {

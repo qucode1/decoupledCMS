@@ -16,6 +16,11 @@ const UserCreatedModelSchema = new Schema({
     type: [Schema.Types.ObjectId],
     default: []
   },
+  project: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "Project"
+  },
   owner: {
     type: Schema.Types.ObjectId,
     required: true,

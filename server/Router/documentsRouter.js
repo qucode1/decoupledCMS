@@ -1,5 +1,6 @@
 const express = require("express")
 const documentsRouter = express.Router({ mergeParams: true })
+const mongoose = require("mongoose")
 
 const { createModel } = require("../utils/dynamicSchema")
 const { Project } = require("../models/Project")
@@ -63,6 +64,8 @@ documentsRouter.post("/add", isOwner, async (req, res) => {
       new NewUserCreatedModel({
         ...req.body,
         owner: req.session.passport.user,
+        project: req.params.projectId,
+        model: req.params.modelId,
         _id: documentId
       }).save()
     ])

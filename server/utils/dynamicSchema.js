@@ -12,6 +12,7 @@ const types = {
 const createSchema = (fieldDataString, schemaOptions) => {
   const fieldDataArray = JSON.parse(fieldDataString)
   const parsedSchemaOptions = schemaOptions ? JSON.parse(schemaOptions) : {}
+
   const fieldDataObj = fieldDataArray.reduce(
     (schemaObj, [fieldName, fieldType, { required, unique, index } = {}]) => {
       schemaObj[fieldName] = {
@@ -26,6 +27,7 @@ const createSchema = (fieldDataString, schemaOptions) => {
     },
     {}
   )
+
   return new Schema(fieldDataObj, parsedSchemaOptions)
 }
 const createModel = (modelName, fieldDataString, schemaOptions, _id) => {

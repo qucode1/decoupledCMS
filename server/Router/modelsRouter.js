@@ -1,6 +1,6 @@
 const express = require("express")
 const modelsRouter = express.Router({ mergeParams: true })
-
+const mongoose = require("mongoose")
 const { createModel } = require("../utils/dynamicSchema")
 const { Project } = require("../models/Project")
 const { UserCreatedModel } = require("../models/UserCreatedModel")
@@ -48,6 +48,13 @@ modelsRouter.post("/add", isOwner, async (req, res) => {
   try {
     const modelId = new mongoose.Types.ObjectId()
 
+    const { fields, ...body } = req.body
+    const parsedFields = JSON.parse(fields)
+    parsedFields.push(["owner", "ObjectId", { required: true }])
+    parsedFields.push(["project", "ObjectId", { required: true }])
+    parsedFields.push(["model", "ObjectId", { required: true }])
+    const newFields = JSON.stringify(parsedFields)
+
     await Promise.all([
       Project.findOneAndUpdate(
         { _id: req.params.projectId },
@@ -56,8 +63,10 @@ modelsRouter.post("/add", isOwner, async (req, res) => {
         }
       ),
       new UserCreatedModel({
-        ...req.body,
+        ...body,
+        fields: newFields,
         owner: req.session.passport.user,
+        project: req.params.projectId,
         _id: modelId
       }).save()
     ])
