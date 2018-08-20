@@ -49,7 +49,7 @@ modelsRouter.post("/add", isOwner, async (req, res) => {
     const modelId = new mongoose.Types.ObjectId()
 
     const { fields, ...body } = req.body
-    const parsedFields = JSON.parse(fields)
+    // const parsedFields = JSON.parse(fields)
     parsedFields.push(["owner", "ObjectId", { required: true }])
     parsedFields.push(["project", "ObjectId", { required: true }])
     parsedFields.push(["model", "ObjectId", { required: true }])

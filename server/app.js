@@ -89,6 +89,14 @@ try {
       return app.render(req, res, "/projects/project", params)
     })
 
+    server.get("/projects/:projectId/models/:modelId", (req, res) => {
+      const params = {
+        projectId: req.params.projectId,
+        modelId: req.params.modelId
+      }
+      return app.render(req, res, "/projects/project/models/model", params)
+    })
+
     server.get("*", (req, res) => handle(req, res))
 
     // starting express server

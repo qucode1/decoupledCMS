@@ -108,7 +108,7 @@ class Index extends React.Component {
           </Fragment>
         )}
         <hr />
-        {projects.length &&
+        {projects.length > 0 &&
           projects.map(project => (
             <div key={project._id}>
               <Link href={`/projects/${project._id}`}>
