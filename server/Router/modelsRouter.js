@@ -34,11 +34,24 @@ modelsRouter.get("/:modelId", async (req, res) => {
     const model = await UserCreatedModel.findOne({
       _id: req.params.modelId
     })
-    res.json({
-      data: {
-        model
-      }
-    })
+    if (req.query.populate) {
+      const { name, fields, options } = model
+      const documentModel = createModel(name, fields, options)
+      const populatedModel = await UserCreatedModel.findOne({
+        _id: req.params.modelId
+      }).populate({ path: "documents", documentModel })
+      res.json({
+        data: {
+          model: populatedModel
+        }
+      })
+    } else {
+      res.json({
+        data: {
+          model
+        }
+      })
+    }
   } catch (err) {
     UnexpectedRoutingError(err, req, res)
   }
@@ -48,28 +61,29 @@ modelsRouter.post("/add", isOwner, async (req, res) => {
   try {
     const modelId = new mongoose.Types.ObjectId()
 
-    const { fields, ...body } = req.body
+    const { fields, options, ...body } = req.body
     // const parsedFields = JSON.parse(fields)
-    parsedFields.push(["owner", "ObjectId", { required: true }])
-    parsedFields.push(["project", "ObjectId", { required: true }])
-    parsedFields.push(["model", "ObjectId", { required: true }])
-    const newFields = JSON.stringify(parsedFields)
+    fields.push(["owner", "ObjectId", { required: true }])
+    fields.push(["project", "ObjectId", { required: true }])
+    fields.push(["model", "ObjectId", { required: true }])
+    const newFields = JSON.stringify(fields)
+    const optionsString = JSON.stringify(options)
 
-    await Promise.all([
-      Project.findOneAndUpdate(
-        { _id: req.params.projectId },
-        {
-          $push: { models: modelId }
-        }
-      ),
-      new UserCreatedModel({
-        ...body,
-        fields: newFields,
-        owner: req.session.passport.user,
-        project: req.params.projectId,
-        _id: modelId
-      }).save()
-    ])
+    await new UserCreatedModel({
+      ...body,
+      fields: newFields,
+      options: optionsString,
+      owner: req.session.passport.user,
+      project: req.params.projectId,
+      _id: modelId
+    }).save()
+    // only update Project if Model was created successfully
+    await Project.findOneAndUpdate(
+      { _id: req.params.projectId },
+      {
+        $push: { models: modelId }
+      }
+    )
     const newModel = await UserCreatedModel.findOne({ _id: modelId })
     res.json({
       data: {

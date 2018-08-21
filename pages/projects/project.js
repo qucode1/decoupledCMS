@@ -4,7 +4,13 @@ import React, { Fragment } from "react"
 import PropTypes from "prop-types"
 import Head from "next/head"
 import { withRouter } from "next/router"
+import Link from "next/link"
 import fetch from "isomorphic-unfetch"
+import Button from "@material-ui/core/Button"
+import Typography from "@material-ui/core/Typography"
+import AddIcon from "@material-ui/icons/Add"
+import ClearIcon from "@material-ui/icons/Clear"
+import DeleteIcon from "@material-ui/icons/Delete"
 
 import withAuth from "../../lib/withAuth"
 import withLayout from "../../lib/withLayout"
@@ -15,9 +21,6 @@ import { serverURL } from "../../variables"
 class Projects extends React.Component {
   state = {
     models: [],
-    newModelName: "",
-    newModelFields: [],
-    newModelOptions: {},
     showNewModelForm: false
   }
   static propTypes = {
@@ -80,41 +83,64 @@ class Projects extends React.Component {
         models: [...prevState.models, newModel]
       }))
   }
+  deleteModel = async targetId => {
+    console.log(`deleteModel ${targetId}`)
+  }
   render() {
     const {
       user,
       project: { project },
       error
     } = this.props
-    const {
-      newModelName,
-      showNewModelForm,
-      newModelFields,
-      newModelOptions
-    } = this.state
+    const { showNewModelForm } = this.state
     if (error) return <h2>Error</h2>
     return (
-      <div style={{ padding: "10px 45px" }}>
+      <div style={{ padding: "10px" }}>
         <Head>
           <title>{project.name}</title>
           <meta name="description" content="description for indexing bots" />
         </Head>
-        <p>{project.name} </p>
-        <hr />
-        <h3>{project.name} - Models</h3>
-        <button onClick={this.toggleNewModelForm}>
-          {showNewModelForm ? "Abandon Model" : "New Model"}
-        </button>
+        <Typography variant="display1" style={{ margin: "16px 0" }}>
+          {project.name}
+        </Typography>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Typography variant="headline" style={{ margin: "8px 8px 8px 0" }}>
+            Models ({project.models.length})
+          </Typography>
+          <Button
+            onClick={this.toggleNewModelForm}
+            color="primary"
+            size="small"
+          >
+            {showNewModelForm ? (
+              <Fragment>
+                <ClearIcon />
+                Discard
+              </Fragment>
+            ) : (
+              <Fragment>
+                <AddIcon />
+                New
+              </Fragment>
+            )}
+          </Button>
+        </div>
         {showNewModelForm && <NewModelForm addModel={this.addModel} />}
+        <hr />
         {project.models.length > 0 &&
           project.models.map((model, index) => (
-            <div key={model.model._id}>
+            <div key={model._id}>
               <Link href={`/projects/${project._id}/models/${model._id}`}>
-                <a>{project.model.name}</a>
+                <a>{model.name}</a>
               </Link>
-              <button onClick={() => this.deleteProject(project._id)}>
-                Delete
-              </button>
+              <Button
+                color="secondary"
+                size="small"
+                onClick={() => this.deleteModel(model._id)}
+              >
+                <DeleteIcon />
+                Delete Model
+              </Button>
             </div>
           ))}
       </div>

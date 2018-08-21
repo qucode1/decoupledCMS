@@ -4,11 +4,29 @@ import React, { Fragment } from "react"
 import PropTypes from "prop-types"
 import Head from "next/head"
 import Link from "next/link"
+import { Form, Field } from "react-final-form"
+import TextField from "../components/formElements/TextField"
+import Button from "@material-ui/core/Button"
+import red from "@material-ui/core/colors/red"
+import DeleteIcon from "@material-ui/icons/Delete"
+import AddIcon from "@material-ui/icons/Add"
+import ClearIcon from "@material-ui/icons/Clear"
+import Typography from "@material-ui/core/Typography"
 
 import withAuth from "../lib/withAuth"
 import withLayout from "../lib/withLayout"
 
 import { serverURL } from "../variables"
+
+const deleteColor = red[500]
+
+const validate = values => {
+  const errors = {}
+  if (!values.newProjectName) {
+    errors.newProjectName = "Required"
+  }
+  return errors
+}
 
 class Index extends React.Component {
   state = {
@@ -31,16 +49,6 @@ class Index extends React.Component {
     } = await fetch(`${serverURL}/${this.props.user._id}/projects`).then(res =>
       res.json()
     )
-    // const models = await fetch(
-    //   `${serverURL}/${
-    //     this.props.user._id
-    //   }/projects/5b7404035d7e042af89d09e9/models`
-    // ).then(res => res.json())
-    // const documents = await fetch(
-    //   `${serverURL}/${
-    //     this.props.user._id
-    //   }/projects/5b7404035d7e042af89d09e9/models/5b7421f8a22787471ca6aa4a/documents`
-    // ).then(res => res.json())
     this.setState({ projects })
   }
   handleInputChange = e =>
@@ -49,7 +57,7 @@ class Index extends React.Component {
     })
   toggleNewProjectForm = () =>
     this.setState({ showNewProjectForm: !this.state.showNewProjectForm })
-  addProject = async () => {
+  addProject = async values => {
     const {
       data: { project: newProject },
       error
@@ -61,7 +69,7 @@ class Index extends React.Component {
         // "Content-Type": "application/x-www-form-urlencoded"
       },
       body: JSON.stringify({
-        name: this.state.newProjectName
+        name: values.newProjectName
       })
     }).then(res => res.json())
 
@@ -91,20 +99,73 @@ class Index extends React.Component {
           <title>Dashboard</title>
           <meta name="description" content="description for indexing bots" />
         </Head>
-        <p> Dashboard </p>
-        <p>Email: {user.email}</p>
-        <h3>My Projects</h3>
-        <button onClick={this.toggleNewProjectForm}>New</button>
+        <Typography variant="display1" style={{ margin: "16px 0" }}>
+          Dashboard
+        </Typography>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Typography variant="headline" style={{ margin: "8px" }}>
+            My Projects ({projects.length})
+          </Typography>
+          <Button
+            onClick={this.toggleNewProjectForm}
+            size="medium"
+            color="primary"
+          >
+            {showNewProjectForm ? (
+              <Fragment>
+                <ClearIcon />
+                Discard
+              </Fragment>
+            ) : (
+              <Fragment>
+                <AddIcon />
+                New
+              </Fragment>
+            )}
+          </Button>
+        </div>
         {showNewProjectForm && (
           <Fragment>
-            <input
-              type="text"
-              name="newProjectName"
-              onChange={this.handleInputChange}
-              value={newProjectName}
-              placeholder="Example Project"
+            <Form
+              onSubmit={this.addProject}
+              initialValues={{ employed: true, stooge: "larry" }}
+              validate={validate}
+              render={({
+                handleSubmit,
+                form: { reset },
+                submitting,
+                pristine,
+                values
+              }) => (
+                <form onSubmit={handleSubmit} style={{ margin: "16px 0" }}>
+                  <div>
+                    <Field
+                      name="newProjectName"
+                      component={TextField}
+                      type="text"
+                      label="New Project Name"
+                    />
+                  </div>
+                  <div className="buttons" style={{ marginTop: "16px" }}>
+                    <Button
+                      type="submit"
+                      color="primary"
+                      disabled={submitting || pristine}
+                    >
+                      Add Project
+                    </Button>
+                    <Button
+                      type="button"
+                      color="secondary"
+                      onClick={reset}
+                      disabled={submitting || pristine}
+                    >
+                      Reset
+                    </Button>
+                  </div>
+                </form>
+              )}
             />
-            <button onClick={this.addProject}>Create Project</button>
           </Fragment>
         )}
         <hr />
@@ -112,11 +173,18 @@ class Index extends React.Component {
           projects.map(project => (
             <div key={project._id}>
               <Link href={`/projects/${project._id}`}>
-                <a>{project.name}</a>
+                <a style={{ marginRight: "8px" }}>{project.name}</a>
               </Link>
-              <button onClick={() => this.deleteProject(project._id)}>
+              <Button
+                // style={{ color: deleteColor, borderColor: deleteColor }}
+                onClick={() => this.deleteProject(project._id)}
+                color="secondary"
+                variant="flat"
+                size="small"
+              >
+                <DeleteIcon />
                 Delete
-              </button>
+              </Button>
             </div>
           ))}
       </div>

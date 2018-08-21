@@ -94,7 +94,7 @@ try {
         projectId: req.params.projectId,
         modelId: req.params.modelId
       }
-      return app.render(req, res, "/projects/project/models/model", params)
+      return app.render(req, res, "/models/model", params)
     })
 
     server.get("*", (req, res) => handle(req, res))
