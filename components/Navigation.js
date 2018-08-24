@@ -6,6 +6,8 @@ import { withStyles } from "@material-ui/core/styles"
 
 import NavigationMenu from "./NavigationMenu"
 
+import { withContext } from "../lib/AppContext"
+
 const styles = theme => ({
   root: {
     width: theme.spacing.drawerWidth,
@@ -18,14 +20,20 @@ class Navigation extends Component {
     mobileOpen: false
   }
   render() {
+    const {
+      context: {
+        state: { navIsOpen },
+        toggleNav
+      }
+    } = this.props
     return (
       <Fragment>
         <Hidden mdUp>
           <Drawer
             variant="temporary"
             anchor={"left"}
-            open={this.props.mobileNavOpen}
-            onClose={this.props.toggleMobileNav}
+            open={navIsOpen}
+            onClose={toggleNav}
             ModalProps={{
               keepMounted: true
             }}
@@ -48,4 +56,4 @@ class Navigation extends Component {
   }
 }
 
-export default withStyles(styles)(Navigation)
+export default withStyles(styles)(withContext(Navigation))

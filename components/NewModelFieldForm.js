@@ -12,6 +12,16 @@ import InputLabel from "@material-ui/core/InputLabel"
 import Input from "@material-ui/core/Input"
 import DeleteIcon from "@material-ui/icons/Delete"
 import Card from "@material-ui/core/Card"
+import { withStyles } from "@material-ui/core/styles"
+
+const styles = theme => ({
+  deleteBtn: {
+    color: theme.palette.error.main,
+    "&:hover": {
+      backgroundColor: "#ffe7e7"
+    }
+  }
+})
 
 class NewModelFieldForm extends Component {
   state = {
@@ -50,18 +60,19 @@ class NewModelFieldForm extends Component {
         })
   }
   render() {
-    const { disabled, addField, removeField } = this.props
+    const { disabled, addField, removeField, classes } = this.props
     const { fieldName, fieldType, fieldOptions } = this.state
     return (
       <div
         style={{
           display: "flex",
-          flexDirection: disabled ? "row" : "column",
+          flexDirection: "row",
           flexWrap: "wrap",
-          justifyContent: disabled ? "space-between" : "center",
-          alignItems: disabled ? "center" : "flex-start",
-          padding: "8px",
-          borderBottom: disabled ? "1px solid rgba(0,0,0,0.4)" : "none"
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: disabled ? "8px" : "0",
+          borderBottom: disabled ? "1px solid rgba(0,0,0,0.4)" : "none",
+          backgroundColor: disabled ? "aliceblue" : "inherit"
         }}
       >
         <TextField
@@ -123,7 +134,11 @@ class NewModelFieldForm extends Component {
         </FormControl>
         {disabled ? (
           <Fragment>
-            <Button color="secondary" size="small" onClick={removeField}>
+            <Button
+              className={classes.deleteBtn}
+              size="small"
+              onClick={removeField}
+            >
               <DeleteIcon />
               Delete Field
             </Button>
@@ -147,4 +162,4 @@ class NewModelFieldForm extends Component {
 
 NewModelFieldForm.propTypes = {}
 
-export default NewModelFieldForm
+export default withStyles(styles)(NewModelFieldForm)

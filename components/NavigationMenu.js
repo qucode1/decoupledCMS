@@ -3,9 +3,9 @@ import { withRouter } from "next/router"
 import { withStyles } from "@material-ui/core/styles"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
+import Divider from "@material-ui/core/Divider"
 import HomeIcon from "@material-ui/icons/Home"
-import PeopleIcon from "@material-ui/icons/People"
-import PortraitIcon from "@material-ui/icons/Portrait"
+import PowerIcon from "@material-ui/icons/PowerSettingsNew"
 
 import NavigationMenuItem from "./NavigationMenuItem"
 
@@ -20,11 +20,9 @@ const NavigationMenu = props => {
       <NavigationMenuItem to="/" text="Home">
         <HomeIcon />
       </NavigationMenuItem>
-      <NavigationMenuItem to="/about" text="About">
-        <PortraitIcon />
-      </NavigationMenuItem>
-      <NavigationMenuItem to="/categories" text="Categories">
-        <PeopleIcon />
+      <Divider />
+      <NavigationMenuItem color="error" to="/logout" text="Logout">
+        <PowerIcon />
       </NavigationMenuItem>
     </List>
   )

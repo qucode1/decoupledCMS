@@ -12,6 +12,7 @@ import DeleteIcon from "@material-ui/icons/Delete"
 import AddIcon from "@material-ui/icons/Add"
 import ClearIcon from "@material-ui/icons/Clear"
 import Typography from "@material-ui/core/Typography"
+import { withStyles } from "@material-ui/core/styles"
 
 import withAuth from "../lib/withAuth"
 import withLayout from "../lib/withLayout"
@@ -27,6 +28,15 @@ const validate = values => {
   }
   return errors
 }
+
+const styles = theme => ({
+  deleteBtn: {
+    color: theme.palette.error.main,
+    "&:hover": {
+      backgroundColor: "#ffe7e7"
+    }
+  }
+})
 
 class Index extends React.Component {
   state = {
@@ -91,7 +101,7 @@ class Index extends React.Component {
       }))
   }
   render() {
-    const { user } = this.props
+    const { user, classes } = this.props
     const { projects, showNewProjectForm, newProjectName } = this.state
     return (
       <div style={{ padding: "10px 45px" }}>
@@ -150,6 +160,7 @@ class Index extends React.Component {
                     <Button
                       type="submit"
                       color="primary"
+                      variant="contained"
                       disabled={submitting || pristine}
                     >
                       Add Project
@@ -176,9 +187,8 @@ class Index extends React.Component {
                 <a style={{ marginRight: "8px" }}>{project.name}</a>
               </Link>
               <Button
-                // style={{ color: deleteColor, borderColor: deleteColor }}
+                className={classes.deleteBtn}
                 onClick={() => this.deleteProject(project._id)}
-                color="secondary"
                 variant="flat"
                 size="small"
               >
@@ -192,4 +202,4 @@ class Index extends React.Component {
   }
 }
 
-export default withAuth(withLayout(Index))
+export default withAuth(withLayout(withStyles(styles)(Index)))

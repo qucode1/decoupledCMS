@@ -69,9 +69,11 @@ class NewModelForm extends Component {
           margin="normal"
           onChange={this.handleChange("newModelName")}
         />
-        <div style={{ display: "flex", alignItems: "center", margin: "8px 0" }}>
-          <Typography variant="title" style={{ marginRight: "8px" }}>
-            Fields
+        <div
+          style={{ display: "flex", alignItems: "center", margin: "8px 0 0 0" }}
+        >
+          <Typography variant="subheading" style={{ marginRight: "8px" }}>
+            Model Fields
           </Typography>
           <Button
             color="primary"
@@ -102,19 +104,11 @@ class NewModelForm extends Component {
                   disabled
                   removeField={() => this.removeField(index)}
                 />
-                {/* <Button
-                color="secondary"
-                size="small"
-                onClick={() => this.removeField(index)}
-              >
-                <DeleteIcon />
-                Remove Field
-              </Button> */}
               </div>
             )
           })}
         </div>
-        <Typography variant="title" style={{ margin: "8px 0" }}>
+        <Typography variant="subheading" style={{ margin: "8px 0" }}>
           Model Options
         </Typography>
         <FormControlLabel
@@ -127,20 +121,22 @@ class NewModelForm extends Component {
           }
           label="timestamps"
         />
-        <Button
-          color="primary"
-          size="small"
-          variant="contained"
-          onClick={() =>
-            this.props.addModel({
-              newModelName,
-              newModelFields,
-              newModelOptions
-            })
-          }
-        >
-          Add Model
-        </Button>
+        <div style={{ display: "block" }}>
+          <Button
+            color="primary"
+            size="small"
+            variant="contained"
+            onClick={() =>
+              this.props.addModel({
+                newModelName,
+                newModelFields,
+                newModelOptions
+              })
+            }
+          >
+            Add Model
+          </Button>
+        </div>
       </Card>
     )
   }

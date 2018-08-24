@@ -11,12 +11,22 @@ import Typography from "@material-ui/core/Typography"
 import AddIcon from "@material-ui/icons/Add"
 import ClearIcon from "@material-ui/icons/Clear"
 import DeleteIcon from "@material-ui/icons/Delete"
+import { withStyles } from "@material-ui/core/styles"
 
 import withAuth from "../../lib/withAuth"
 import withLayout from "../../lib/withLayout"
 import NewModelForm from "../../components/NewModelForm"
 
 import { serverURL } from "../../variables"
+
+const styles = theme => ({
+  deleteBtn: {
+    color: theme.palette.error.main,
+    "&:hover": {
+      backgroundColor: "#ffe7e7"
+    }
+  }
+})
 
 class Projects extends React.Component {
   state = {
@@ -90,7 +100,8 @@ class Projects extends React.Component {
     const {
       user,
       project: { project },
-      error
+      error,
+      classes
     } = this.props
     const { showNewModelForm } = this.state
     if (error) return <h2>Error</h2>
@@ -134,7 +145,7 @@ class Projects extends React.Component {
                 <a>{model.name}</a>
               </Link>
               <Button
-                color="secondary"
+                className={classes.deleteBtn}
                 size="small"
                 onClick={() => this.deleteModel(model._id)}
               >
@@ -148,4 +159,4 @@ class Projects extends React.Component {
   }
 }
 
-export default withAuth(withLayout(withRouter(Projects)))
+export default withAuth(withLayout(withRouter(withStyles(styles)(Projects))))

@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Component } from "react"
 import { withRouter } from "next/router"
 import NavLink from "next/link"
 import ListItem from "@material-ui/core/ListItem"
@@ -10,25 +10,74 @@ const styles = theme => ({
   navLink: {
     display: "flex"
   },
+
   activeNavLink: {
     backgroundColor: theme.palette.action.hover
   }
 })
 
-const NavigationMenuItem = props => (
-  <ListItem
-    button
-    className={
-      props.router.pathname === props.to ? props.classes.activeNavLink : ""
+class NavigationMenuItem extends Component {
+  styles = theme => ({
+    navLink: {
+      display: "flex"
+    },
+    itemText: {
+      color: this.props.color ? theme.palette[this.props.color].main : "inherit"
+    },
+    activeNavLink: {
+      backgroundColor: theme.palette.action.hover
     }
-  >
-    <NavLink href={props.to}>
-      <div className={`${props.classes.navLink}`}>
-        <ListItemIcon>{props.children}</ListItemIcon>
-        <ListItemText primary={props.text} />
-      </div>
-    </NavLink>
-  </ListItem>
-)
+  })
+  div = props => {
+    return (
+      <NavLink href={props.to}>
+        <ListItem
+          button
+          className={
+            props.router.pathname === props.to
+              ? props.classes.activeNavLink
+              : ""
+          }
+        >
+          <div className={`${props.classes.navLink}`}>
+            <ListItemIcon
+              classes={{
+                root: `${props.classes.itemText}`
+              }}
+            >
+              {props.children}
+            </ListItemIcon>
+            <ListItemText
+              classes={{
+                primary: `${props.classes.itemText}`,
+                secondary: `${props.classes.itemText}`
+              }}
+              primary={props.text}
+            />
+          </div>
+        </ListItem>
+      </NavLink>
+    )
+  }
+  StyledDiv = withStyles(this.styles)(this.div)
+  render() {
+    return <this.StyledDiv {...this.props} />
+    // return (
+    //   <NavLink href={props.to}>
+    //     <ListItem
+    //       button
+    //       className={
+    //         props.router.pathname === props.to ? props.classes.activeNavLink : ""
+    //       }
+    //     >
+    //       <div className={`${props.classes.navLink}`}>
+    //         <ListItemIcon>{props.children}</ListItemIcon>
+    //         <ListItemText primary={props.text} />
+    //       </div>
+    //     </ListItem>
+    //   </NavLink>
+    // )
+  }
+}
 
 export default withStyles(styles)(withRouter(NavigationMenuItem))
