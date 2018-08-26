@@ -34,7 +34,7 @@ class NavigationMenuItem extends Component {
         <ListItem
           button
           className={
-            props.router.pathname === props.to
+            props.router.pathname.startsWith(props.to)
               ? props.classes.activeNavLink
               : ""
           }

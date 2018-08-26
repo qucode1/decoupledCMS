@@ -95,4 +95,23 @@ modelsRouter.post("/add", isOwner, async (req, res) => {
   }
 })
 
+modelsRouter.delete("/:modelId/delete", isOwner, async (req, res) => {
+  try {
+    const model = await UserCreatedModel.findOne({
+      _id: req.params.modelId
+    })
+    const { name, fields, options } = model
+    const Model = createModel(name, fields, options)
+    await Model.deleteMany({ model: req.params.modelId })
+    await UserCreatedModel.findByIdAndRemove(req.params.modelId)
+    res.status(200).json({
+      data: {
+        message: "Model and related documents have been deleted."
+      }
+    })
+  } catch (err) {
+    UnexpectedRoutingError(err, req, res)
+  }
+})
+
 module.exports = modelsRouter

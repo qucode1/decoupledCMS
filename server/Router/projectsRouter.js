@@ -105,14 +105,14 @@ projectsRouter.post("/add", isOwner, async (req, res) => {
 projectsRouter.delete("/:projectId/delete", isOwner, async (req, res) => {
   try {
     const userCreatedModels = await UserCreatedModel.find({
-      project: req.params.ObjectId
+      project: req.params.projectId
     })
     for (const userCreatedModel of userCreatedModels) {
       const { name, fields, options } = userCreatedModel
       const Model = createModel(name, fields, options)
       await Model.deleteMany({ project: req.params.projectId })
     }
-    await UserCreatedModel.deleteMany({ project: req.params.ObjectId })
+    await UserCreatedModel.deleteMany({ project: req.params.projectId })
     await Project.findByIdAndRemove({ _id: req.params.projectId })
     await User.findByIdAndUpdate(
       { _id: req.user._id },
@@ -122,7 +122,7 @@ projectsRouter.delete("/:projectId/delete", isOwner, async (req, res) => {
     )
     res.status(200).json({
       data: {
-        message: "Project, Models and Documents have been deleted."
+        message: "Project, related models and documents have been deleted."
       }
     })
   } catch (err) {

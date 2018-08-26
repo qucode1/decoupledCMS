@@ -34,12 +34,16 @@ const optionsMenu = [
   }
 ]
 
-function Header({ classes, user, context: { toggleNav } }) {
+function Header({
+  classes,
+  user,
+  context: { toggleNav, state: contextState }
+}) {
   return (
     <AppBar className={classes.root} position="fixed">
       <Toolbar className={classes.toolbar}>
         <Typography color="inherit" variant="title">
-          DecoupledCMS
+          {contextState.pageTitle}
         </Typography>
         <Hidden mdUp>
           <IconButton
