@@ -39,13 +39,14 @@ modelsRouter.get("/:modelId", async (req, res) => {
       const documentModel = createModel(name, fields, options)
       const populatedModel = await UserCreatedModel.findOne({
         _id: req.params.modelId
-      }).populate({ path: "documents", documentModel })
+      }).populate({ path: "documents", model: documentModel })
       res.json({
         data: {
           model: populatedModel
         }
       })
     } else {
+      console.log("model", model)
       res.json({
         data: {
           model

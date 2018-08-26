@@ -1,0 +1,100 @@
+import React, { Component } from "react"
+import { Form, Field } from "react-final-form"
+import Card from "@material-ui/core/Card"
+import TextField from "../components/formElements/TextField"
+import Checkbox from "../components/formElements/Checkbox"
+import Radio from "../components/formElements/Radio"
+import Button from "@material-ui/core/Button"
+
+class NewDocumentForm extends Component {
+  validate = values => {
+    const errors = {}
+    // if (!values.newDocumentName) {
+    //   errors.newProjectName = "Required"
+    // }
+    return errors
+  }
+  required = value => (value ? undefined : "Required")
+  composeValidators = (...validators) => value =>
+    validators.reduce(
+      (error, validator) => error || validator(value),
+      undefined
+    )
+  getType = fieldType => {
+    const table = {
+      String: "text",
+      Date: "date",
+      Number: "number",
+      checkbox: "checkbox"
+    }
+    return table[fieldType]
+  }
+  capitalize = str => `${str[0].toUpperCase()}${str.slice(1)}`
+  render() {
+    const { addDocument, fields } = this.props
+    return (
+      <Card style={{ padding: "8px" }}>
+        <Form
+          onSubmit={addDocument}
+          validate={this.validate}
+          render={({
+            handleSubmit,
+            form: { reset },
+            submitting,
+            pristine,
+            values,
+            invalid
+          }) => (
+            <form onSubmit={handleSubmit} style={{ margin: "16px 0" }}>
+              {fields
+                .filter(
+                  ([name]) => !["owner", "project", "model"].includes(name)
+                )
+                .map(([fieldName, fieldType, fieldOptions], index) => (
+                  <div key={`field-${index}`}>
+                    <label>{`${this.capitalize(fieldName)}`}</label>
+                    <Field
+                      component={fieldType === "Boolean" ? Checkbox : TextField}
+                      name={`${fieldName}`}
+                      type={
+                        fieldType === "Boolean"
+                          ? "checkbox"
+                          : this.getType(fieldType)
+                      }
+                      validate={
+                        fieldType === "Boolean"
+                          ? null
+                          : fieldOptions.required
+                            ? this.required
+                            : null
+                      }
+                    />
+                  </div>
+                ))}
+              <div className="buttons" style={{ marginTop: "16px" }}>
+                <Button
+                  type="submit"
+                  color="primary"
+                  variant="contained"
+                  disabled={submitting || pristine || invalid}
+                >
+                  Add Project
+                </Button>
+                <Button
+                  type="button"
+                  color="secondary"
+                  onClick={reset}
+                  disabled={submitting || pristine}
+                >
+                  Reset
+                </Button>
+              </div>
+            </form>
+          )}
+        />
+      </Card>
+    )
+  }
+}
+
+export default NewDocumentForm

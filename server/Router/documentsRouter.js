@@ -56,12 +56,12 @@ documentsRouter.post("/add", isOwner, async (req, res) => {
     })
     const { name, fields, options } = modelData
 
-    const NewUserCreatedModel = createModel(name, fields, options)
-    modelData.documents.push(documentId)
+    const DocumentModel = createModel(name, fields, options)
 
+    modelData.documents.push(documentId)
     await Promise.all([
       modelData.save(),
-      new NewUserCreatedModel({
+      new DocumentModel({
         ...req.body,
         owner: req.session.passport.user,
         project: req.params.projectId,
@@ -69,7 +69,7 @@ documentsRouter.post("/add", isOwner, async (req, res) => {
         _id: documentId
       }).save()
     ])
-    const newDocument = await NewUserCreatedModel.findOne({
+    const newDocument = await DocumentModel.findOne({
       _id: documentId
     })
 

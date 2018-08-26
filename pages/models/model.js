@@ -4,6 +4,9 @@ import React, { Fragment } from "react"
 import PropTypes from "prop-types"
 import Head from "next/head"
 import { withRouter } from "next/router"
+import Button from "@material-ui/core/Button"
+import AddIcon from "@material-ui/icons/Add"
+import ClearIcon from "@material-ui/icons/Clear"
 import Link from "next/link"
 import fetch from "isomorphic-unfetch"
 
@@ -12,13 +15,16 @@ import withLayout from "../../lib/withLayout"
 
 import { serverURL } from "../../variables"
 
+import NewDocumentForm from "../../components/NewDocumentForm"
+
 class Model extends React.Component {
   state = {
     id: "",
     name: "",
     documents: [],
     fields: [],
-    options: {}
+    options: {},
+    showNewDocumentForm: false
   }
   static propTypes = {
     user: PropTypes.shape({
@@ -34,7 +40,7 @@ class Model extends React.Component {
     const { data: model, error } = await fetch(
       `${serverURL}/${req.user._id}/projects/${req.params.projectId}/models/${
         req.params.modelId
-      }?populate`,
+      }?populate=true`,
       {
         headers: {
           cookie: req.headers.cookie
@@ -57,12 +63,40 @@ class Model extends React.Component {
     this.setState({
       [e.target.name]: e.target.value
     })
-  addDocument = async () => {
-    console.log(`addDocument`)
+  toggleNewDocumentForm = () =>
+    this.setState({ showNewDocumentForm: !this.state.showNewDocumentForm })
+  addDocument = async values => {
+    console.log(`addDocument`, values)
+    const {
+      user: { _id: userId },
+      router: {
+        query: { projectId, modelId }
+      }
+    } = this.props
+    const { documents } = this.state
+    const { data, error } = await fetch(
+      `${serverURL}/${userId}/projects/${projectId}/models/${modelId}/documents/add`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify({
+          ...values
+        })
+      }
+    ).then(res => res.json())
+    console.log("addDocument data", data)
+    console.log("addDocument error", error)
+    !error &&
+      this.setState(prevState => ({
+        documents: prevState.documents.push(data.document)
+      }))
   }
   render() {
     const { user, error } = this.props
-    const { name, documents } = this.state
+    const { name, documents, fields, showNewDocumentForm } = this.state
     if (error) return <h2>Error</h2>
     return (
       <div style={{ padding: "10px 45px" }}>
@@ -71,7 +105,26 @@ class Model extends React.Component {
           <meta name="description" content="description for indexing bots" />
         </Head>
         <h3>{name} </h3>
-        <hr />
+        <Button
+          onClick={this.toggleNewDocumentForm}
+          size="medium"
+          color="primary"
+        >
+          {showNewDocumentForm ? (
+            <Fragment>
+              <ClearIcon />
+              Discard
+            </Fragment>
+          ) : (
+            <Fragment>
+              <AddIcon />
+              New
+            </Fragment>
+          )}
+        </Button>
+        {showNewDocumentForm && (
+          <NewDocumentForm fields={fields} addDocument={this.addDocument} />
+        )}
         <h4>Documents ({documents.length})</h4>
         {documents.length > 0 && documents.map(doc => <p>{doc.name}</p>)}
       </div>

@@ -9,7 +9,7 @@ export default ({
   <Checkbox
     {...rest}
     name={name}
-    InputProps={restInput}
+    inputProps={restInput}
     onChange={onChange}
     checked={!!checked}
   />
