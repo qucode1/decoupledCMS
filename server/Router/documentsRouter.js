@@ -83,4 +83,24 @@ documentsRouter.post("/add", isOwner, async (req, res) => {
   }
 })
 
+documentsRouter.delete("/:documentId/delete", async (req, res) => {
+  try {
+    const modelData = await UserCreatedModel.findOne({
+      _id: req.params.modelId
+    })
+    const { name, fields, options } = modelData
+    const DocumentModel = createModel(name, fields, options)
+
+    await DocumentModel.findByIdAndRemove(req.params.documentId)
+
+    res.json({
+      data: {
+        message: "Document has been removed."
+      }
+    })
+  } catch (err) {
+    UnexpectedRoutingError(err, req, res)
+  }
+})
+
 module.exports = documentsRouter

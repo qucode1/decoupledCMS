@@ -16,7 +16,6 @@ class NewDocumentForm extends Component {
     return errors
   }
   changeTextInput = e => {
-    console.log("changeTextInput", e.target.name)
     this.setState({
       [e.target.name]: !!!this.state[e.target.name]
     })
@@ -90,6 +89,8 @@ class NewDocumentForm extends Component {
                       multiline={
                         fieldType === "String" &&
                         this.state[`${fieldName}Multiline`]
+                          ? "true"
+                          : "false"
                       }
                       style={{
                         width:

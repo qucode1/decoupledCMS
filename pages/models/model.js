@@ -16,6 +16,7 @@ import withLayout from "../../lib/withLayout"
 import { serverURL } from "../../variables"
 
 import NewDocumentForm from "../../components/NewDocumentForm"
+import CustomList from "../../components/CustomList"
 
 class Model extends React.Component {
   state = {
@@ -50,11 +51,10 @@ class Model extends React.Component {
     return { model: { ...model }, error }
   }
   componentDidMount() {
-    const { _id: id, name, documents, fields, options } = this.props.model.model
+    const { _id: id, fields, options, ...rest } = this.props.model.model
     this.setState({
-      name,
+      ...rest,
       id,
-      documents,
       fields: JSON.parse(fields),
       options: JSON.parse(options)
     })
@@ -66,7 +66,6 @@ class Model extends React.Component {
   toggleNewDocumentForm = () =>
     this.setState({ showNewDocumentForm: !this.state.showNewDocumentForm })
   addDocument = async values => {
-    console.log(`addDocument`, values)
     const {
       user: { _id: userId },
       router: {
@@ -87,16 +86,39 @@ class Model extends React.Component {
         })
       }
     ).then(res => res.json())
-    console.log("addDocument data", data)
-    console.log("addDocument error", error)
     !error &&
       this.setState(prevState => ({
-        documents: prevState.documents.push(data.document)
+        documents: [...prevState.documents, data.document]
+      }))
+  }
+  deleteDocument = async targetId => {
+    const {
+      user: { _id: userId }
+    } = this.props
+    const { id: modelId, project: projectId } = this.state
+    const { data, error } = await fetch(
+      `${serverURL}/${userId}/projects/${projectId}/models/${modelId}/documents/${targetId}/delete`,
+      {
+        method: "DELETE"
+      }
+    ).then(res => res.json())
+    !error &&
+      this.setState(prevState => ({
+        documents: prevState.documents.filter(
+          document => document._id !== targetId
+        )
       }))
   }
   render() {
     const { user, error } = this.props
-    const { name, documents, fields, showNewDocumentForm } = this.state
+    const {
+      name,
+      documents,
+      fields,
+      showNewDocumentForm,
+      project,
+      id: modelId
+    } = this.state
     if (error) return <h2>Error</h2>
     return (
       <div style={{ padding: "10px 45px" }}>
@@ -126,7 +148,14 @@ class Model extends React.Component {
           <NewDocumentForm fields={fields} addDocument={this.addDocument} />
         )}
         <h4>Documents ({documents.length})</h4>
-        {documents.length > 0 && documents.map(doc => <p>{doc.name}</p>)}
+        {documents.length > 0 && (
+          <CustomList
+            items={documents}
+            baseURL={`projects/${project._id}/models/${modelId}/documents`}
+            deleteItem={this.deleteDocument}
+            icon="document"
+          />
+        )}
       </div>
     )
   }
