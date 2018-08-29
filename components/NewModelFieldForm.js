@@ -1,17 +1,11 @@
 import React, { Component, Fragment } from "react"
-import PropTypes from "prop-types"
-import Select from "@material-ui/core/Select"
+import { Form, Field } from "react-final-form"
+import Select from "./formElements/Select"
+import TextField from "./formElements/TextField"
+import Checkbox from "./formElements/Checkbox"
 import MenuItem from "@material-ui/core/MenuItem"
-import Checkbox from "@material-ui/core/Checkbox"
-import FormControlLabel from "@material-ui/core/FormControlLabel"
-import TextField from "@material-ui/core/TextField"
 import Button from "@material-ui/core/Button"
-import Typography from "@material-ui/core/Typography"
-import FormControl from "@material-ui/core/FormControl"
-import InputLabel from "@material-ui/core/InputLabel"
-import Input from "@material-ui/core/Input"
 import DeleteIcon from "@material-ui/icons/Delete"
-import Card from "@material-ui/core/Card"
 import { withStyles } from "@material-ui/core/styles"
 
 const styles = theme => ({
@@ -24,46 +18,21 @@ const styles = theme => ({
 })
 
 class NewModelFieldForm extends Component {
-  state = {
-    fieldName: "",
-    fieldType: "String",
-    fieldOptions: {
-      required: false,
-      unique: false,
-      index: false
-    }
-  }
-  componentDidMount() {
-    if (this.props.defaultValues) {
-      const { fieldName, fieldType, fieldOptions } = this.props.defaultValues
-      this.setState({
-        fieldName,
-        fieldType,
-        fieldOptions
-      })
-    }
-  }
-  handleChange = name => event => {
-    const { target } = event
-    name === "fieldOptions"
-      ? this.setState(prevState => {
-          const options = { ...prevState.fieldOptions }
-          return {
-            fieldOptions: {
-              ...options,
-              [target.value]: target.checked
-            }
-          }
-        })
-      : this.setState({
-          [name]: target.value
-        })
-  }
+  required = value => (value ? undefined : "Required")
+
   render() {
-    const { disabled, addField, removeField, classes } = this.props
-    const { fieldName, fieldType, fieldOptions } = this.state
+    const {
+      disabled,
+      addField,
+      removeField,
+      classes,
+      initialValues: {
+        fieldOptions: { required, unique } = {},
+        ...initialValues
+      } = {}
+    } = this.props
     return (
-      <div
+      <Form
         style={{
           display: "flex",
           flexDirection: "row",
@@ -74,88 +43,85 @@ class NewModelFieldForm extends Component {
           borderBottom: disabled ? "1px solid rgba(0,0,0,0.4)" : "none",
           backgroundColor: disabled ? "aliceblue" : "inherit"
         }}
-      >
-        <TextField
-          id="name"
-          label="Name"
-          disabled={disabled}
-          value={fieldName}
-          margin="normal"
-          required
-          onChange={this.handleChange("fieldName")}
-        />
-        <FormControl margin="normal">
-          <InputLabel shrink htmlFor="field-type-placeholder">
-            Field Type
-          </InputLabel>
-          <Select
-            value={this.state.fieldType}
-            onChange={this.handleChange("fieldType")}
-            input={<Input name="fieldType" id="field-type-placeholder" />}
-            displayEmpty
-            disabled={disabled}
-            name="fieldType"
-          >
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value={"String"}>String</MenuItem>
-            <MenuItem value={"Boolean"}>Boolean</MenuItem>
-            <MenuItem value={"Date"}>Date</MenuItem>
-            <MenuItem value={"Number"}>Number</MenuItem>
-            <MenuItem value={"ObjectId"}>ObjectId</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl margin="normal">
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={this.state.fieldOptions.required}
-                  disabled={disabled}
-                  value="required"
-                  onChange={this.handleChange("fieldOptions")}
-                />
-              }
-              label="required"
+        onSubmit={({ fieldName, fieldType, required, unique, ...rest }) => {
+          addField([fieldName, fieldType, { required, unique }])
+        }}
+        initialValues={{ ...initialValues, required, unique }}
+        render={({
+          handleSubmit,
+          form: { reset },
+          submitting,
+          pristine,
+          values,
+          invalid
+        }) => (
+          <div>
+            <Field
+              name="fieldName"
+              type="text"
+              component={TextField}
+              disabled={disabled}
+              label="Field Name"
+              validate={this.required}
             />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={this.state.fieldOptions.unique}
-                  disabled={disabled}
-                  value="unique"
-                  onChange={this.handleChange("fieldOptions")}
-                />
-              }
-              label="unique"
+            <Field
+              component={Select}
+              displayEmpty
+              disabled={disabled}
+              name="fieldType"
+              label="Field Type"
+              validate={this.required}
+            >
+              <MenuItem value="">
+                <em>Type</em>
+              </MenuItem>
+              <MenuItem value={"String"}>String</MenuItem>
+              <MenuItem value={"Boolean"}>Boolean</MenuItem>
+              <MenuItem value={"Date"}>Date</MenuItem>
+              <MenuItem value={"Number"}>Number</MenuItem>
+              <MenuItem value={"ObjectId"}>ObjectId</MenuItem>
+            </Field>
+            <label htmlFor="required">required</label>
+            <Field
+              name="required"
+              component={Checkbox}
+              type="checkbox"
+              disabled={disabled}
             />
+            <label htmlFor="unique">unique</label>
+            <Field
+              name="unique"
+              component={Checkbox}
+              type="checkbox"
+              disabled={disabled}
+            />
+            {disabled ? (
+              <Fragment>
+                <Button
+                  className={classes.deleteBtn}
+                  size="small"
+                  onClick={removeField}
+                >
+                  <DeleteIcon />
+                  Delete Field
+                </Button>
+              </Fragment>
+            ) : (
+              <Fragment>
+                <Button
+                  color="primary"
+                  size="small"
+                  variant="outlined"
+                  disabled={pristine || invalid || disabled}
+                  onClick={handleSubmit}
+                >
+                  Add Field
+                </Button>
+              </Fragment>
+            )}
           </div>
-        </FormControl>
-        {disabled ? (
-          <Fragment>
-            <Button
-              className={classes.deleteBtn}
-              size="small"
-              onClick={removeField}
-            >
-              <DeleteIcon />
-              Delete Field
-            </Button>
-          </Fragment>
-        ) : (
-          <Fragment>
-            <Button
-              color="primary"
-              size="small"
-              variant="outlined"
-              onClick={() => addField([fieldName, fieldType, fieldOptions])}
-            >
-              Add Field
-            </Button>
-          </Fragment>
         )}
-      </div>
+      />
     )
   }
 }

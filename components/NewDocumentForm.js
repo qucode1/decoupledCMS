@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button"
 
 class NewDocumentForm extends Component {
   state = {}
+
   validate = values => {
     const errors = {}
     // if (!values.newDocumentName) {
@@ -15,17 +16,22 @@ class NewDocumentForm extends Component {
     // }
     return errors
   }
-  changeTextInput = e => {
+
+  changeTextInputType = e => {
     this.setState({
       [e.target.name]: !!!this.state[e.target.name]
     })
   }
+
   required = value => (value ? undefined : "Required")
-  composeValidators = (...validators) => value =>
+
+  composeValidators = (...validators) => value => {
     validators.reduce(
       (error, validator) => error || validator(value),
       undefined
     )
+  }
+
   getType = fieldType => {
     const table = {
       String: "text",
@@ -35,7 +41,9 @@ class NewDocumentForm extends Component {
     }
     return table[fieldType]
   }
+
   capitalize = str => `${str[0].toUpperCase()}${str.slice(1)}`
+
   render() {
     const { addDocument, fields } = this.props
     return (
@@ -77,7 +85,7 @@ class NewDocumentForm extends Component {
                             input={{
                               name: `${fieldName}Multiline`,
                               checked: !!this.state[`${fieldName}Multiline`],
-                              onChange: this.changeTextInput
+                              onChange: this.changeTextInputType
                             }}
                           />
                           <label>Multiline</label>
