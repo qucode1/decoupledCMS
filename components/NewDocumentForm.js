@@ -7,12 +7,19 @@ import Radio from "../components/formElements/Radio"
 import Button from "@material-ui/core/Button"
 
 class NewDocumentForm extends Component {
+  state = {}
   validate = values => {
     const errors = {}
     // if (!values.newDocumentName) {
     //   errors.newProjectName = "Required"
     // }
     return errors
+  }
+  changeTextInput = e => {
+    console.log("changeTextInput", e.target.name)
+    this.setState({
+      [e.target.name]: !!!this.state[e.target.name]
+    })
   }
   required = value => (value ? undefined : "Required")
   composeValidators = (...validators) => value =>
@@ -51,10 +58,46 @@ class NewDocumentForm extends Component {
                   ([name]) => !["owner", "project", "model"].includes(name)
                 )
                 .map(([fieldName, fieldType, fieldOptions], index) => (
-                  <div key={`field-${index}`}>
-                    <label>{`${this.capitalize(fieldName)}`}</label>
+                  <div key={`field-${index}`} style={{ marginBottom: "16px" }}>
+                    <div
+                      style={{
+                        display:
+                          fieldType === "String" ? "flex" : "inline-block",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        flexWrap: "wrap"
+                      }}
+                    >
+                      <label
+                        htmlFor={fieldName}
+                        style={{ marginRight: "16px" }}
+                      >{`${this.capitalize(fieldName)}`}</label>
+                      {fieldType === "String" && (
+                        <div>
+                          <Checkbox
+                            input={{
+                              name: `${fieldName}Multiline`,
+                              checked: !!this.state[`${fieldName}Multiline`],
+                              onChange: this.changeTextInput
+                            }}
+                          />
+                          <label>Multiline</label>
+                        </div>
+                      )}
+                    </div>
                     <Field
                       component={fieldType === "Boolean" ? Checkbox : TextField}
+                      multiline={
+                        fieldType === "String" &&
+                        this.state[`${fieldName}Multiline`]
+                      }
+                      style={{
+                        width:
+                          fieldType === "String" &&
+                          this.state[`${fieldName}Multiline`]
+                            ? "100%"
+                            : "auto"
+                      }}
                       name={`${fieldName}`}
                       type={
                         fieldType === "Boolean"
