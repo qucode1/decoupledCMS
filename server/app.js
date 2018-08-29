@@ -62,23 +62,9 @@ try {
       }
     }
 
-    // const isOwner = (req, res, next) => {
-    //   console.log("isOwner req.session", req.session)
-    //   console.log("isOwner req.params", req.params)
-    //   if (!req.params.user) next()
-    //   else if (req.session.passport && req.session.passport.user) {
-    //     req.session.passport.user === req.params.user && next()
-    //   } else {
-    //     return res.json({
-    //       error: "Not authorized! You are not the owner"
-    //     })
-    //   }
-    // }
-
     server.use(session(sess))
     server.use(bodyParser.json())
     server.use(bodyParser.urlencoded({ extended: true }))
-    // server.use(isOwner)
 
     auth({ server, ROOT_URL })
 
@@ -86,7 +72,7 @@ try {
 
     server.get("/projects/:projectId", (req, res) => {
       const params = { projectId: req.params.projectId }
-      return app.render(req, res, "/projects/project", params)
+      return app.render(req, res, "/projects", params)
     })
 
     server.get("/projects/:projectId/models/:modelId", (req, res) => {
@@ -94,7 +80,7 @@ try {
         projectId: req.params.projectId,
         modelId: req.params.modelId
       }
-      return app.render(req, res, "/models/model", params)
+      return app.render(req, res, "/models", params)
     })
 
     server.get("*", (req, res) => handle(req, res))

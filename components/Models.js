@@ -53,23 +53,28 @@ class Models extends Component {
     } = await fetch(`${serverURL}/${userId}/projects/${projectId}`).then(res =>
       res.json()
     )
+
     const {
       context: { setPageTitle }
     } = this.props
     setPageTitle(project.name)
-    localStorage.setItem(`project-${projectId}`, JSON.stringify(project))
+
     this.setState({
       project,
       error,
       models: project.models
     })
   }
-  handleInputChange = e =>
+
+  handleInputChange = e => {
     this.setState({
       [e.target.name]: e.target.value
     })
-  toggleNewModelForm = () =>
+  }
+  toggleNewModelForm = () => {
     this.setState({ showNewModelForm: !this.state.showNewModelForm })
+  }
+
   addModel = async ({ newModelName, newModelFields, newModelOptions }) => {
     const {
       data: { model: newModel },
@@ -98,6 +103,7 @@ class Models extends Component {
         models: [...prevState.models, newModel]
       }))
   }
+
   deleteModel = async targetId => {
     const {
       router: {
@@ -116,6 +122,7 @@ class Models extends Component {
         models: prevState.models.filter(model => model._id !== targetId)
       }))
   }
+
   render() {
     const { user, classes } = this.props
     const { showNewModelForm, project = {}, error, models } = this.state

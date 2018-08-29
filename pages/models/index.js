@@ -2,18 +2,17 @@
 
 import React from "react"
 import { withRouter } from "next/router"
-import { withStyles } from "@material-ui/core/styles"
 
 import withAuth from "../../lib/withAuth"
 import withLayout from "../../lib/withLayout"
 import { withContext } from "../../lib/AppContext"
 
-import Models from "../../components/Models"
+import Documents from "../../components/Documents"
 
-class Project extends React.Component {
+class ModelIndex extends React.Component {
   render() {
-    return <Models {...this.props} />
+    return <Documents {...this.props} />
   }
 }
 
-export default withAuth(withLayout(withRouter(withContext(Project))))
+export default withAuth(withLayout(withRouter(withContext(ModelIndex))))

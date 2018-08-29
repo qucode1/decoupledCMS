@@ -122,7 +122,7 @@ class NewDocumentForm extends Component {
                   variant="contained"
                   disabled={submitting || pristine || invalid}
                 >
-                  Add Project
+                  Add Document
                 </Button>
                 <Button
                   type="button"
