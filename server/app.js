@@ -77,7 +77,7 @@ try {
 
     server.get("/projects/:projectId/edit", (req, res) => {
       const params = { projectId: req.params.projectId }
-      return app.render(req, res, "/projects/project", params)
+      return app.render(req, res, "/projects/edit", params)
     })
 
     server.get("/projects/:projectId/models/:modelId", (req, res) => {
@@ -88,6 +88,14 @@ try {
       return app.render(req, res, "/models", params)
     })
 
+    server.get("/projects/:projectId/models/:modelId/edit", (req, res) => {
+      const params = {
+        projectId: req.params.projectId,
+        modelId: req.params.modelId
+      }
+      return app.render(req, res, "/models/edit", params)
+    })
+
     server.get(
       "/projects/:projectId/models/:modelId/documents/:documentId",
       (req, res) => {
@@ -96,7 +104,7 @@ try {
           modelId: req.params.modelId,
           documentId: req.params.documentId
         }
-        return app.render(req, res, "/documents/document", params)
+        return app.render(req, res, "/documents/edit", params)
       }
     )
 

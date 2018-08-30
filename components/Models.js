@@ -159,6 +159,7 @@ class Models extends Component {
             baseURL={`/projects/${project._id}/models`}
             deleteItem={this.deleteModel}
             icon="model"
+            edit
           />
         )}
       </div>

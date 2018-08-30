@@ -22,10 +22,20 @@ class NewModelForm extends Component {
   }
 
   modelOptions = ["timestamps"]
+  componentDidMount() {
+    const { initialValues } = this.props
+    if (
+      initialValues &&
+      initialValues.newModelFields &&
+      initialValues.newModelFields.length
+    ) {
+      this.setState({
+        newModelFields: initialValues.newModelFields
+      })
+    }
+  }
 
   validate = values => {
-    const { newModelFields } = this.state
-    console.log("newModelFields", newModelFields)
     const errors = {}
     if (!values.newModelName) {
       errors.newModelName = "Required"
@@ -90,14 +100,15 @@ class NewModelForm extends Component {
 
   submitModel = ({ newModelName, ...values }) => {
     const { newModelFields = [] } = this.state
-    const { addModel } = this.props
+    const { addModel, updateModel } = this.props
+    const submit = addModel || updateModel
     const newModelOptions = this.modelOptions.reduce((acc, option) => {
       if (values[option]) {
         acc[option] = values[option]
       }
       return acc
     }, {})
-    addModel({
+    submit({
       newModelName,
       newModelFields,
       newModelOptions
@@ -105,11 +116,13 @@ class NewModelForm extends Component {
   }
   render() {
     const { newModelFields, showNewFieldForm } = this.state
+    const { initialValues, addModel, updateModel } = this.props
     return (
       <Card style={{ padding: "8px" }}>
         <Form
           onSubmit={this.submitModel}
           validate={this.validate}
+          initialValues={initialValues}
           render={({
             handleSubmit,
             form: { reset, change },
@@ -168,25 +181,30 @@ class NewModelForm extends Component {
                 />
               )}
               <div style={{ margin: "16px 0" }}>
-                {newModelFields.map((field, index) => {
-                  const [fieldName, fieldType, fieldOptions] = field
-                  return (
-                    <div key={`newModelFields[${index}]`}>
-                      <NewModelFieldForm
-                        initialValues={{ fieldName, fieldType, fieldOptions }}
-                        disabled
-                        removeField={() => {
-                          const { newModelFields = [] } = values
-                          this.removeField(index)
-                          change(
-                            "newModelFields",
-                            newModelFields.filter((f, i) => i !== index)
-                          )
-                        }}
-                      />
-                    </div>
+                {newModelFields
+                  .filter(
+                    ([fieldName]) =>
+                      !["owner", "project", "model"].includes(fieldName)
                   )
-                })}
+                  .map((field, index) => {
+                    const [fieldName, fieldType, fieldOptions] = field
+                    return (
+                      <div key={`newModelFields[${index}]`}>
+                        <NewModelFieldForm
+                          initialValues={{ fieldName, fieldType, fieldOptions }}
+                          disabled
+                          removeField={() => {
+                            const { newModelFields = [] } = values
+                            this.removeField(index)
+                            change(
+                              "newModelFields",
+                              newModelFields.filter((f, i) => i !== index)
+                            )
+                          }}
+                        />
+                      </div>
+                    )
+                  })}
               </div>
               <Typography variant="subheading" style={{ margin: "8px 0" }}>
                 Model Options
@@ -205,7 +223,7 @@ class NewModelForm extends Component {
                   type="submit"
                   disabled={submitting || pristine || invalid}
                 >
-                  Add Model
+                  {updateModel ? "Edit Model" : "Add Model"}
                 </Button>
                 <Button
                   type="button"

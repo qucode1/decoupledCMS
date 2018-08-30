@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { Component, Fragment } from "react"
 import Link from "next/link"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
@@ -7,6 +7,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction"
 import ListItemText from "@material-ui/core/ListItemText"
 import Avatar from "@material-ui/core/Avatar"
 import IconButton from "@material-ui/core/IconButton"
+import EditIcon from "@material-ui/icons/Edit"
 import DeleteIcon from "@material-ui/icons/Delete"
 import FolderIcon from "@material-ui/icons/Folder"
 import DescriptionIcon from "@material-ui/icons/Description"
@@ -19,7 +20,13 @@ class CustomList extends Component {
     document: <DescriptionIcon />
   }
   render() {
-    const { items, baseURL = "#", deleteItem, icon = "project" } = this.props
+    const {
+      items,
+      baseURL = "#",
+      deleteItem,
+      edit,
+      icon = "project"
+    } = this.props
     return (
       <List>
         {items.map(item => (
@@ -30,6 +37,17 @@ class CustomList extends Component {
               </ListItemAvatar>
               <ListItemText primary={item.name} />
               <ListItemSecondaryAction>
+                {edit && (
+                  <Link
+                    href={`${baseURL}/${item._id}/edit`}
+                    key={item._id}
+                    prefetch
+                  >
+                    <IconButton aria-label="Delete">
+                      <EditIcon />
+                    </IconButton>
+                  </Link>
+                )}
                 <IconButton
                   aria-label="Delete"
                   onClick={() => deleteItem(item._id)}

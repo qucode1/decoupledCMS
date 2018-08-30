@@ -95,6 +95,38 @@ modelsRouter.post("/add", isOwner, async (req, res) => {
   }
 })
 
+modelsRouter.put("/:modelId/update", isOwner, async (req, res) => {
+  try {
+    const modelId = req.params.modelId
+    const model = await UserCreatedModel.findOne({ _id: modelId })
+
+    const { name, fields, options } = req.body
+    const filteredFields = fields.filter(
+      ([fieldName]) => !["owner", "project", "model"].includes(fieldName)
+    )
+    filteredFields.push(["owner", "ObjectId", { required: true }])
+    filteredFields.push(["project", "ObjectId", { required: true }])
+    filteredFields.push(["model", "ObjectId", { required: true }])
+    const newFields = JSON.stringify(filteredFields)
+    const optionsString = JSON.stringify(options)
+
+    model.name = name
+    model.fields = newFields
+    model.options = optionsString
+
+    await model.save()
+
+    const newModel = await UserCreatedModel.findOne({ _id: modelId })
+    res.json({
+      data: {
+        model: newModel
+      }
+    })
+  } catch (err) {
+    UnexpectedRoutingError(err, req, res)
+  }
+})
+
 modelsRouter.delete("/:modelId/delete", isOwner, async (req, res) => {
   try {
     const model = await UserCreatedModel.findOne({

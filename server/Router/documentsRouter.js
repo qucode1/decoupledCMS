@@ -92,7 +92,6 @@ documentsRouter.put("/:documentId/update", isOwner, async (req, res) => {
     const DocumentModel = createModel(name, fields, options)
 
     const document = await DocumentModel.findById(req.params.documentId)
-    const originalDocumentCopy = { ...document }
     const parsedFields = await JSON.parse(fields)
 
     parsedFields.forEach(([key]) => {
