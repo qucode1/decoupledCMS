@@ -75,6 +75,11 @@ try {
       return app.render(req, res, "/projects", params)
     })
 
+    server.get("/projects/:projectId/edit", (req, res) => {
+      const params = { projectId: req.params.projectId }
+      return app.render(req, res, "/projects/project", params)
+    })
+
     server.get("/projects/:projectId/models/:modelId", (req, res) => {
       const params = {
         projectId: req.params.projectId,
@@ -82,6 +87,18 @@ try {
       }
       return app.render(req, res, "/models", params)
     })
+
+    server.get(
+      "/projects/:projectId/models/:modelId/documents/:documentId",
+      (req, res) => {
+        const params = {
+          projectId: req.params.projectId,
+          modelId: req.params.modelId,
+          documentId: req.params.documentId
+        }
+        return app.render(req, res, "/documents/document", params)
+      }
+    )
 
     server.get("*", (req, res) => handle(req, res))
 

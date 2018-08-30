@@ -46,7 +46,6 @@ modelsRouter.get("/:modelId", async (req, res) => {
         }
       })
     } else {
-      console.log("model", model)
       res.json({
         data: {
           model

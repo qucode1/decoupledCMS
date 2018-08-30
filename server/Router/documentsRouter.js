@@ -83,6 +83,39 @@ documentsRouter.post("/add", isOwner, async (req, res) => {
   }
 })
 
+documentsRouter.put("/:documentId/update", isOwner, async (req, res) => {
+  try {
+    const modelData = await UserCreatedModel.findOne({
+      _id: req.params.modelId
+    })
+    const { name, fields, options } = modelData
+    const DocumentModel = createModel(name, fields, options)
+
+    const document = await DocumentModel.findById(req.params.documentId)
+    const originalDocumentCopy = { ...document }
+    const parsedFields = await JSON.parse(fields)
+
+    parsedFields.forEach(([key]) => {
+      if (!["owner", "project", "model"].includes(key)) {
+        document[key] = req.body[key]
+      }
+    })
+
+    await document.save()
+    const updatedDocument = await DocumentModel.findOne({
+      _id: req.params.documentId
+    })
+
+    res.json({
+      data: {
+        document: updatedDocument
+      }
+    })
+  } catch (err) {
+    UnexpectedRoutingError(err, req, res)
+  }
+})
+
 documentsRouter.delete("/:documentId/delete", async (req, res) => {
   try {
     const modelData = await UserCreatedModel.findOne({

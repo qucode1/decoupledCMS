@@ -45,12 +45,13 @@ class NewDocumentForm extends Component {
   capitalize = str => `${str[0].toUpperCase()}${str.slice(1)}`
 
   render() {
-    const { addDocument, fields } = this.props
+    const { addDocument, updateDocument, fields, initialValues } = this.props
     return (
       <Card style={{ padding: "8px" }}>
         <Form
-          onSubmit={addDocument}
+          onSubmit={addDocument || updateDocument}
           validate={this.validate}
+          initialValues={initialValues}
           render={({
             handleSubmit,
             form: { reset },
@@ -130,7 +131,7 @@ class NewDocumentForm extends Component {
                   variant="contained"
                   disabled={submitting || pristine || invalid}
                 >
-                  Add Document
+                  {updateDocument ? "Update Document" : "Add Document"}
                 </Button>
                 <Button
                   type="button"
