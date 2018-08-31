@@ -134,8 +134,20 @@ modelsRouter.delete("/:modelId/delete", isOwner, async (req, res) => {
     })
     const { name, fields, options } = model
     const Model = createModel(name, fields, options)
+
     await Model.deleteMany({ model: req.params.modelId })
+    const modelName = Model.modelName
+    delete mongoose.models[modelName]
+    delete mongoose.modelSchemas[modelName]
+
     await UserCreatedModel.findByIdAndRemove(req.params.modelId)
+
+    const project = await Project.findById(req.params.projectId)
+    project.models = project.models.filter(
+      id => id.toString() !== req.params.modelId
+    )
+    await project.save()
+
     res.status(200).json({
       data: {
         message: "Model and related documents have been deleted."

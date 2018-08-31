@@ -120,10 +120,15 @@ documentsRouter.delete("/:documentId/delete", async (req, res) => {
     const modelData = await UserCreatedModel.findOne({
       _id: req.params.modelId
     })
-    const { name, fields, options } = modelData
+    const { name, fields, options, documents } = modelData
     const DocumentModel = createModel(name, fields, options)
 
+    modelData.documents = documents.filter(id => {
+      return id.toString() !== req.params.documentId
+    })
+
     await DocumentModel.findByIdAndRemove(req.params.documentId)
+    await modelData.save()
 
     res.json({
       data: {
