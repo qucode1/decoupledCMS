@@ -61,7 +61,7 @@ class Projects extends Component {
         // "Content-Type": "application/x-www-form-urlencoded"
       },
       body: JSON.stringify({
-        name: values.newProjectName
+        name: values.name
       })
     }).then(res => res.json())
 
@@ -115,6 +115,7 @@ class Projects extends Component {
             items={projects}
             baseURL={`/projects`}
             deleteItem={this.deleteProject}
+            edit
           />
         )}
       </div>

@@ -51,16 +51,16 @@ projectsRouter.get("/:projectId", isOwner, async (req, res) => {
   }
 })
 
-projectsRouter.patch("/:projectId", isOwner, async (req, res) => {
+projectsRouter.put("/:projectId/update", isOwner, async (req, res) => {
   try {
     const project = await Project.findOne({ _id: req.params.projectId })
-    if (project.owner === req.params.user) {
-      const updatedProject = {
-        ...project,
-        ...req.body,
-        _id: project._id
-      }
-      const savedProject = await updatedProject.save()
+    if (project.owner.toString() === req.params.user) {
+      Object.keys(req.body).forEach(key => {
+        if (!["owner", "models"].includes(key)) {
+          project[key] = req.body[key]
+        }
+      })
+      const savedProject = await project.save()
       res.json({
         data: {
           project: savedProject

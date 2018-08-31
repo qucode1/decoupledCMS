@@ -7,8 +7,9 @@ import Hidden from "@material-ui/core/Hidden"
 import Avatar from "@material-ui/core/Avatar"
 import { withStyles } from "@material-ui/core/styles"
 import MenuIcon from "@material-ui/icons/Menu"
+import BackIcon from "@material-ui/icons/KeyboardBackspace"
 import IconButton from "@material-ui/core/IconButton"
-
+import { withRouter } from "next/router"
 import MenuDrop from "./MenuDrop"
 import { withContext } from "../lib/AppContext"
 
@@ -37,14 +38,22 @@ const optionsMenu = [
 function Header({
   classes,
   user,
-  context: { toggleNav, state: contextState }
+  context: { toggleNav, state: contextState },
+  router: { back, route }
 }) {
   return (
     <AppBar className={classes.root} position="fixed">
       <Toolbar className={classes.toolbar}>
-        <Typography color="inherit" variant="title">
-          {contextState.pageTitle}
-        </Typography>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {route !== "/" && (
+            <IconButton onClick={back} color="inherit">
+              <BackIcon />
+            </IconButton>
+          )}
+          <Typography color="inherit" variant="title">
+            {contextState.pageTitle}
+          </Typography>
+        </div>
         <Hidden mdUp>
           <IconButton
             className={classes.menuButton}
@@ -88,4 +97,4 @@ Header.defaultProps = {
   user: null
 }
 
-export default withStyles(styles)(withContext(Header))
+export default withStyles(styles)(withContext(withRouter(Header)))

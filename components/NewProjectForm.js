@@ -12,14 +12,20 @@ class NewProjectForm extends Component {
     }
     return errors
   }
+  submitProject = values => {
+    const { addProject, updateProject } = this.props
+    const submit = addProject || updateProject
+    submit({ name: values.newProjectName })
+  }
   render() {
-    const { addProject } = this.props
+    const { updateProject, initialValues } = this.props
     return (
       <Card style={{ padding: "8px" }}>
         <Form
-          onSubmit={addProject}
+          onSubmit={this.submitProject}
           initialValues={{ employed: true, stooge: "larry" }}
           validate={this.validate}
+          initialValues={initialValues}
           render={({
             handleSubmit,
             form: { reset },
@@ -43,7 +49,7 @@ class NewProjectForm extends Component {
                   variant="contained"
                   disabled={submitting || pristine}
                 >
-                  Add Project
+                  {updateProject ? "Edit Project" : "Add Project"}
                 </Button>
                 <Button
                   type="button"
