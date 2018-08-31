@@ -88,7 +88,7 @@ projectsRouter.post("/add", isOwner, async (req, res) => {
       new Project({
         _id: projectId,
         owner: req.session.passport.user,
-        name: req.body.name
+        name: `${req.body.name} -- ${req.session.passport.user}`
       }).save()
     ])
     const newProject = await Project.findOne({ _id: projectId })

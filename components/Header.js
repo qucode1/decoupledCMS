@@ -13,6 +13,8 @@ import { withRouter } from "next/router"
 import MenuDrop from "./MenuDrop"
 import { withContext } from "../lib/AppContext"
 
+import { cleanName } from "../lib/helpers"
+
 const styles = theme => ({
   root: {
     width: "100%",
@@ -51,7 +53,7 @@ function Header({
             </IconButton>
           )}
           <Typography color="inherit" variant="title">
-            {contextState.pageTitle}
+            {cleanName(contextState.pageTitle)}
           </Typography>
         </div>
         <Hidden mdUp>

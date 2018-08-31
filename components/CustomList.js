@@ -14,6 +14,7 @@ import DescriptionIcon from "@material-ui/icons/Description"
 import WorkIcon from "@material-ui/icons/Work"
 import { withStyles } from "@material-ui/core/styles"
 
+import { cleanName } from "../lib/helpers.js"
 const styles = theme => ({})
 
 class CustomList extends Component {
@@ -39,7 +40,7 @@ class CustomList extends Component {
               <ListItemAvatar>
                 <Avatar>{this.icons[icon]}</Avatar>
               </ListItemAvatar>
-              <ListItemText primary={item.name} />
+              <ListItemText primary={cleanName(item.name)} />
               <ListItemSecondaryAction>
                 {edit && (
                   <Link
