@@ -9,6 +9,12 @@ import DeleteIcon from "@material-ui/icons/Delete"
 import { withStyles } from "@material-ui/core/styles"
 
 const styles = theme => ({
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+    alignItems: "baseline"
+  },
   deleteBtn: {
     color: theme.palette.error.main,
     "&:hover": {
@@ -55,7 +61,7 @@ class NewModelFieldForm extends Component {
           values,
           invalid
         }) => (
-          <div>
+          <div className={classes.root}>
             <Field
               name="fieldName"
               type="text"
@@ -81,20 +87,24 @@ class NewModelFieldForm extends Component {
               <MenuItem value={"Number"}>Number</MenuItem>
               <MenuItem value={"ObjectId"}>ObjectId</MenuItem>
             </Field>
-            <label htmlFor="required">required</label>
-            <Field
-              name="required"
-              component={Checkbox}
-              type="checkbox"
-              disabled={disabled}
-            />
-            <label htmlFor="unique">unique</label>
-            <Field
-              name="unique"
-              component={Checkbox}
-              type="checkbox"
-              disabled={disabled}
-            />
+            <div>
+              <label htmlFor="required">required</label>
+              <Field
+                name="required"
+                component={Checkbox}
+                type="checkbox"
+                disabled={disabled}
+              />
+            </div>
+            <div>
+              <label htmlFor="unique">unique</label>
+              <Field
+                name="unique"
+                component={Checkbox}
+                type="checkbox"
+                disabled={disabled}
+              />
+            </div>
             {disabled ? (
               <Fragment>
                 <Button

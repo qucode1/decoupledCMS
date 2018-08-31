@@ -180,6 +180,7 @@ class NewModelForm extends Component {
                   }}
                 />
               )}
+              {newModelFields.length > 0 && <hr />}
               <div style={{ margin: "16px 0" }}>
                 {newModelFields
                   .filter(
@@ -206,6 +207,7 @@ class NewModelForm extends Component {
                     )
                   })}
               </div>
+              {newModelFields.length > 0 && <hr />}
               <Typography variant="subheading" style={{ margin: "8px 0" }}>
                 Model Options
               </Typography>

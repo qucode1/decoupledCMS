@@ -1,7 +1,19 @@
 import React, { Component } from "react"
+import { withStyles } from "@material-ui/core/styles"
+import { defaultRootStyling } from "../lib/SharedStyles"
 
 import NewDocumentForm from "./NewDocumentForm"
+
 import { serverURL } from "../variables"
+
+const styles = theme => ({
+  root: {
+    ...defaultRootStyling(theme),
+    [theme.breakpoints.up("md")]: {
+      padding: `${theme.spacing.unit * 5}px`
+    }
+  }
+})
 
 class Document extends Component {
   state = {}
@@ -10,7 +22,8 @@ class Document extends Component {
       router: {
         query: { projectId, modelId, documentId }
       },
-      user: { _id: userId }
+      user: { _id: userId },
+      context: { setPageTitle }
     } = this.props
 
     const [modelRes, documentRes] = await Promise.all([
@@ -31,6 +44,8 @@ class Document extends Component {
       documentError
     } = documentRes
 
+    setPageTitle(documentData.name)
+
     if (modelError || documentError) {
       this.setState({
         error: modelError || documentError
@@ -45,11 +60,6 @@ class Document extends Component {
         [`modelFields-${modelId}`]: JSON.parse(fields)
       })
     }
-
-    const {
-      context: { setPageTitle }
-    } = this.props
-    setPageTitle(documentData.name)
   }
 
   updateDocument = async values => {
@@ -82,11 +92,12 @@ class Document extends Component {
     const {
       router: {
         query: { modelId }
-      }
+      },
+      classes
     } = this.props
     const fields = this.state[`modelFields-${modelId}`]
     return (
-      <div>
+      <div className={classes.root}>
         {fields && (
           <NewDocumentForm
             initialValues={{ ...this.state }}
@@ -99,4 +110,4 @@ class Document extends Component {
   }
 }
 
-export default Document
+export default withStyles(styles)(Document)

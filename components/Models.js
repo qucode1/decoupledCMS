@@ -6,13 +6,16 @@ import Typography from "@material-ui/core/Typography"
 import AddIcon from "@material-ui/icons/Add"
 import ClearIcon from "@material-ui/icons/Clear"
 import { withStyles } from "@material-ui/core/styles"
+import { defaultRootStyling } from "../lib/SharedStyles"
 
 import NewModelForm from "./NewModelForm"
 import CustomList from "./CustomList"
 
 import { serverURL } from "../variables"
 
-const styles = theme => ({})
+const styles = theme => ({
+  root: defaultRootStyling(theme)
+})
 
 class Models extends Component {
   state = {
@@ -128,7 +131,7 @@ class Models extends Component {
     const { showNewModelForm, project = {}, error, models } = this.state
     if (error) return <h2>Error</h2>
     return (
-      <div style={{ padding: "10px" }}>
+      <div className={classes.root}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Typography variant="headline" style={{ margin: "8px 8px 8px 0" }}>
             Models ({models.length})
@@ -152,7 +155,6 @@ class Models extends Component {
           </Button>
         </div>
         {showNewModelForm && <NewModelForm addModel={this.addModel} />}
-        <hr />
         {models.length > 0 && (
           <CustomList
             items={models}

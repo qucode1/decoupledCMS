@@ -5,13 +5,14 @@ import AddIcon from "@material-ui/icons/Add"
 import ClearIcon from "@material-ui/icons/Clear"
 import Typography from "@material-ui/core/Typography"
 import { withStyles } from "@material-ui/core/styles"
-
+import { defaultRootStyling } from "../lib/SharedStyles"
 import { serverURL } from "../variables"
 
 import NewProjectForm from "../components/NewProjectForm"
 import CustomList from "../components/CustomList"
 
 const styles = theme => ({
+  root: defaultRootStyling(theme),
   deleteBtn: {
     color: theme.palette.error.main,
     "&:hover": {
@@ -85,7 +86,7 @@ class Projects extends Component {
     const { user, classes } = this.props
     const { projects, showNewProjectForm, newProjectName } = this.state
     return (
-      <div style={{ padding: "10px 45px" }}>
+      <div className={classes.root}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Typography variant="headline" style={{ margin: "8px" }}>
             My Projects ({projects.length})

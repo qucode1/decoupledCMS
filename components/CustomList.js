@@ -12,6 +12,9 @@ import DeleteIcon from "@material-ui/icons/Delete"
 import FolderIcon from "@material-ui/icons/Folder"
 import DescriptionIcon from "@material-ui/icons/Description"
 import WorkIcon from "@material-ui/icons/Work"
+import { withStyles } from "@material-ui/core/styles"
+
+const styles = theme => ({})
 
 class CustomList extends Component {
   icons = {
@@ -21,6 +24,7 @@ class CustomList extends Component {
   }
   render() {
     const {
+      classes,
       items,
       baseURL = "#",
       deleteItem,
@@ -44,7 +48,7 @@ class CustomList extends Component {
                     prefetch
                   >
                     <IconButton aria-label="Delete">
-                      <EditIcon />
+                      <EditIcon color="secondary" />
                     </IconButton>
                   </Link>
                 )}
@@ -52,7 +56,7 @@ class CustomList extends Component {
                   aria-label="Delete"
                   onClick={() => deleteItem(item._id)}
                 >
-                  <DeleteIcon />
+                  <DeleteIcon color="error" />
                 </IconButton>
               </ListItemSecondaryAction>
             </ListItem>
@@ -63,4 +67,4 @@ class CustomList extends Component {
   }
 }
 
-export default CustomList
+export default withStyles(styles)(CustomList)

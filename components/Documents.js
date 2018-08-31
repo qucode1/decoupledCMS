@@ -9,13 +9,15 @@ import ClearIcon from "@material-ui/icons/Clear"
 import fetch from "isomorphic-unfetch"
 import Typography from "@material-ui/core/Typography"
 import { withStyles } from "@material-ui/core/styles"
-
+import { defaultRootStyling } from "../lib/SharedStyles"
 import { serverURL } from "../variables"
 
 import NewDocumentForm from "./NewDocumentForm"
 import CustomList from "./CustomList"
 
-const styles = theme => ({})
+const styles = theme => ({
+  root: defaultRootStyling(theme)
+})
 
 class Documents extends React.Component {
   state = {
@@ -121,7 +123,7 @@ class Documents extends React.Component {
   }
 
   render() {
-    const { user, error } = this.props
+    const { user, error, classes } = this.props
     const {
       name,
       documents,
@@ -132,7 +134,7 @@ class Documents extends React.Component {
     } = this.state
     if (error) return <h2>Error</h2>
     return (
-      <div style={{ padding: "10px" }}>
+      <div className={classes.root}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <Typography variant="headline" style={{ margin: "8px 8px 8px 0" }}>
             Documents ({documents.length})

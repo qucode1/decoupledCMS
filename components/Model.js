@@ -1,8 +1,18 @@
 import React, { Component } from "react"
-
+import { withStyles } from "@material-ui/core/styles"
+import { defaultRootStyling } from "../lib/SharedStyles"
 import NewModelForm from "./NewModelForm"
 
 import { serverURL } from "../variables"
+
+const styles = theme => ({
+  root: {
+    ...defaultRootStyling(theme),
+    [theme.breakpoints.up("md")]: {
+      padding: `${theme.spacing.unit * 5}px`
+    }
+  }
+})
 
 class Model extends Component {
   state = {}
@@ -11,14 +21,19 @@ class Model extends Component {
       router: {
         query: { projectId, modelId }
       },
-      user: { _id: userId }
+      user: { _id: userId },
+      context: { setPageTitle }
     } = this.props
+
     const {
       data: { model },
       error
     } = await fetch(
       `${serverURL}/${userId}/projects/${projectId}/models/${modelId}`
     ).then(res => res.json())
+
+    setPageTitle(`${model.name}`)
+
     if (!error) {
       const { fields, options } = model
       this.setState({
@@ -67,8 +82,9 @@ class Model extends Component {
 
   render() {
     const { name: newModelName, fields: newModelFields, options } = this.state
+    const { classes } = this.props
     return (
-      <div>
+      <div className={classes.root}>
         {newModelName && (
           <NewModelForm
             initialValues={{ newModelName, newModelFields, ...options }}
@@ -80,4 +96,4 @@ class Model extends Component {
   }
 }
 
-export default Model
+export default withStyles(styles)(Model)
