@@ -11,6 +11,10 @@ const UserCreatedModelSchema = new Schema({
     type: String,
     required: true
   },
+  entry: {
+    type: String,
+    required: true
+  },
   options: String,
   documents: {
     type: [Schema.Types.ObjectId],

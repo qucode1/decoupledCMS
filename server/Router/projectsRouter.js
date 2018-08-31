@@ -110,8 +110,9 @@ projectsRouter.delete("/:projectId/delete", isOwner, async (req, res) => {
     for (const userCreatedModel of userCreatedModels) {
       const { name, fields, options } = userCreatedModel
       const Model = createModel(name, fields, options)
-      await Model.deleteMany({ project: req.params.projectId })
+      // await Model.deleteMany({ project: req.params.projectId })
       const modelName = Model.modelName
+      await Model.collection.drop()
       delete mongoose.models[modelName]
       delete mongoose.modelSchemas[modelName]
     }

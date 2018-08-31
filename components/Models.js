@@ -78,7 +78,12 @@ class Models extends Component {
     this.setState({ showNewModelForm: !this.state.showNewModelForm })
   }
 
-  addModel = async ({ newModelName, newModelFields, newModelOptions }) => {
+  addModel = async ({
+    newModelName,
+    newModelFields,
+    newModelOptions,
+    newModelEntry
+  }) => {
     const {
       data: { model: newModel },
       error
@@ -96,6 +101,7 @@ class Models extends Component {
         body: JSON.stringify({
           name: newModelName,
           fields: newModelFields,
+          entry: newModelEntry,
           options: newModelOptions
         })
       }

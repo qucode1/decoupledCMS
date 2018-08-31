@@ -61,7 +61,7 @@ modelsRouter.post("/add", isOwner, async (req, res) => {
   try {
     const modelId = new mongoose.Types.ObjectId()
 
-    const { fields, options, ...body } = req.body
+    const { name, fields, options, entry } = req.body
     // const parsedFields = JSON.parse(fields)
     fields.push(["owner", "ObjectId", { required: true }])
     fields.push(["project", "ObjectId", { required: true }])
@@ -70,9 +70,9 @@ modelsRouter.post("/add", isOwner, async (req, res) => {
     const optionsString = JSON.stringify(options)
 
     await new UserCreatedModel({
-      ...body,
       fields: newFields,
-      name: `${req.body.name} -- ${req.session.passport.user}`,
+      entry,
+      name: `${name} -- ${req.session.passport.user}`,
       options: optionsString,
       owner: req.session.passport.user,
       project: req.params.projectId,
@@ -101,7 +101,7 @@ modelsRouter.put("/:modelId/update", isOwner, async (req, res) => {
     const modelId = req.params.modelId
     const model = await UserCreatedModel.findOne({ _id: modelId })
 
-    const { name, fields, options } = req.body
+    const { name, fields, options, entry } = req.body
     const filteredFields = fields.filter(
       ([fieldName]) => !["owner", "project", "model"].includes(fieldName)
     )
@@ -112,6 +112,7 @@ modelsRouter.put("/:modelId/update", isOwner, async (req, res) => {
     const optionsString = JSON.stringify(options)
 
     model.name = name
+    model.entry = entry
     model.fields = newFields
     model.options = optionsString
 
@@ -136,8 +137,9 @@ modelsRouter.delete("/:modelId/delete", isOwner, async (req, res) => {
     const { name, fields, options } = model
     const Model = createModel(name, fields, options)
 
-    await Model.deleteMany({ model: req.params.modelId })
+    // await Model.deleteMany({ model: req.params.modelId })
     const modelName = Model.modelName
+    await Model.collection.drop()
     delete mongoose.models[modelName]
     delete mongoose.modelSchemas[modelName]
 

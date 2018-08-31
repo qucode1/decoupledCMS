@@ -30,7 +30,8 @@ class CustomList extends Component {
       baseURL = "#",
       deleteItem,
       edit,
-      icon = "project"
+      icon = "project",
+      entry
     } = this.props
     return (
       <List>
@@ -40,7 +41,7 @@ class CustomList extends Component {
               <ListItemAvatar>
                 <Avatar>{this.icons[icon]}</Avatar>
               </ListItemAvatar>
-              <ListItemText primary={cleanName(item.name)} />
+              <ListItemText primary={cleanName(item[entry] || item.name)} />
               <ListItemSecondaryAction>
                 {edit && (
                   <Link

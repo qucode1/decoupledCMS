@@ -126,6 +126,7 @@ class Documents extends React.Component {
     const { user, error, classes } = this.props
     const {
       name,
+      entry,
       documents,
       fields,
       showNewDocumentForm,
@@ -166,6 +167,7 @@ class Documents extends React.Component {
             baseURL={`${modelId}/documents`}
             deleteItem={this.deleteDocument}
             icon="document"
+            entry={entry}
           />
         )}
       </div>

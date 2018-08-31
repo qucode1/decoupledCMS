@@ -9,8 +9,10 @@ import AddIcon from "@material-ui/icons/Add"
 import DeleteIcon from "@material-ui/icons/Delete"
 import ClearIcon from "@material-ui/icons/Clear"
 import Card from "@material-ui/core/Card"
+import MenuItem from "@material-ui/core/MenuItem"
 import Wrapper from "./formElements/Wrapper"
 import NewModelFieldForm from "./NewModelFieldForm"
+import Select from "./formElements/Select"
 
 class NewModelForm extends Component {
   state = {
@@ -98,7 +100,7 @@ class NewModelForm extends Component {
     }))
   }
 
-  submitModel = ({ newModelName, ...values }) => {
+  submitModel = ({ newModelName, newModelEntry, ...values }) => {
     const { newModelFields = [] } = this.state
     const { addModel, updateModel } = this.props
     const submit = addModel || updateModel
@@ -111,6 +113,7 @@ class NewModelForm extends Component {
     submit({
       newModelName,
       newModelFields,
+      newModelEntry,
       newModelOptions
     })
   }
@@ -208,6 +211,22 @@ class NewModelForm extends Component {
                   })}
               </div>
               {newModelFields.length > 0 && <hr />}
+              <Field
+                component={Select}
+                displayEmpty
+                name="newModelEntry"
+                label="Entry Field"
+                validate={this.required}
+              >
+                <MenuItem value="">
+                  <em>Entry Field</em>
+                </MenuItem>
+                {newModelFields.map((field, fieldIndex) => (
+                  <MenuItem key={`selectEntry-${fieldIndex}`} value={field[0]}>
+                    {field[0]}
+                  </MenuItem>
+                ))}
+              </Field>
               <Typography variant="subheading" style={{ margin: "8px 0" }}>
                 Model Options
               </Typography>
