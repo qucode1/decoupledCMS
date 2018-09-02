@@ -166,6 +166,7 @@ class Models extends Component {
             items={models}
             itemName="model"
             baseURL={`/projects/${project._id}/models`}
+            params={{ projectId: project._id }}
             deleteItem={this.deleteModel}
             icon="model"
             edit

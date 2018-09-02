@@ -106,7 +106,7 @@ try {
           modelId: req.params.modelId,
           documentId: req.params.documentId
         }
-        return app.render(req, res, "/documents/edit", params)
+        return app.render(req, res, "/documents", params)
       }
     )
 

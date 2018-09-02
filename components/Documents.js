@@ -166,6 +166,7 @@ class Documents extends React.Component {
             items={documents}
             itemName="document"
             baseURL={`${modelId}/documents`}
+            params={{ modelId: modelId }}
             deleteItem={this.deleteDocument}
             icon="document"
             entry={entry}

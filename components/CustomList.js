@@ -18,16 +18,30 @@ import { cleanName } from "../lib/helpers.js"
 const styles = theme => ({})
 
 class CustomList extends Component {
+  state = {}
   icons = {
     project: <WorkIcon />,
     model: <FolderIcon />,
     document: <DescriptionIcon />
+  }
+  componentDidMount() {
+    const { params } = this.props
+    if (params) {
+      let temp = ""
+      for (let name in params) {
+        temp += `&${name}=${params[name]}`
+      }
+      this.setState({
+        params: temp
+      })
+    }
   }
   render() {
     const {
       classes,
       items,
       itemName = "",
+      params,
       baseURL = "#",
       deleteItem,
       edit,
@@ -38,7 +52,8 @@ class CustomList extends Component {
       <List>
         {items.map(item => (
           <Link
-            href={`${baseURL}?${itemName}Id=${item._id}`}
+            href={`/${itemName}s/?${itemName}Id=${item._id}${this.state
+              .params || ""}`}
             as={`${baseURL}/${item._id}`}
             key={item._id}
             prefetch
@@ -51,7 +66,8 @@ class CustomList extends Component {
               <ListItemSecondaryAction>
                 {edit && (
                   <Link
-                    href={`${baseURL}/edit?${itemName}Id=${item._id}`}
+                    href={`/${itemName}s/edit?${itemName}Id=${item._id}${this
+                      .state.params || ""}`}
                     as={`${baseURL}/${item._id}/edit`}
                     key={item._id}
                     prefetch
