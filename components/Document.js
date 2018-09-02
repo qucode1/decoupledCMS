@@ -44,7 +44,7 @@ class Document extends Component {
       documentError
     } = documentRes
 
-    setPageTitle(modelData[modelData.entry] || documentData.name)
+    setPageTitle(documentData[modelData.entry] || documentData.name)
 
     if (modelError || documentError) {
       this.setState({

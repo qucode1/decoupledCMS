@@ -19,7 +19,9 @@ const styles = theme => ({
   root: {
     width: "100%",
     color: theme.palette.primary.contrastText,
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.main
+  },
+  withNav: {
     [theme.breakpoints.up("md")]: {
       marginLeft: theme.spacing.drawerWidth,
       width: `calc(100% - ${theme.spacing.drawerWidth})`
@@ -43,17 +45,22 @@ function Header({
   context: { toggleNav, state: contextState },
   router: { back, route }
 }) {
+  const { pageTitle } = contextState
   return (
-    <AppBar className={classes.root} position="fixed">
+    <AppBar
+      className={`${classes.root}${user && classes.withNav}`}
+      position="fixed"
+    >
       <Toolbar className={classes.toolbar}>
         <div style={{ display: "flex", alignItems: "center" }}>
-          {route !== "/" && (
-            <IconButton onClick={back} color="inherit">
-              <BackIcon />
-            </IconButton>
-          )}
+          {route !== "/" &&
+            route !== "/login" && (
+              <IconButton onClick={back} color="inherit">
+                <BackIcon />
+              </IconButton>
+            )}
           <Typography color="inherit" variant="title">
-            {cleanName(contextState.pageTitle)}
+            {cleanName(pageTitle) || "Decoupled CMS"}
           </Typography>
         </div>
         <Hidden mdUp>
