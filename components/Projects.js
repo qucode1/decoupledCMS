@@ -113,6 +113,7 @@ class Projects extends Component {
         {projects.length > 0 && (
           <CustomList
             items={projects}
+            itemName="project"
             baseURL={`/projects`}
             deleteItem={this.deleteProject}
             edit

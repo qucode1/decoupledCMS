@@ -27,6 +27,7 @@ class CustomList extends Component {
     const {
       classes,
       items,
+      itemName = "",
       baseURL = "#",
       deleteItem,
       edit,
@@ -36,7 +37,12 @@ class CustomList extends Component {
     return (
       <List>
         {items.map(item => (
-          <Link href={`${baseURL}/${item._id}`} key={item._id} prefetch>
+          <Link
+            href={`${baseURL}?${itemName}Id=${item._id}`}
+            as={`${baseURL}/${item._id}`}
+            key={item._id}
+            prefetch
+          >
             <ListItem button>
               <ListItemAvatar>
                 <Avatar>{this.icons[icon]}</Avatar>
@@ -45,7 +51,8 @@ class CustomList extends Component {
               <ListItemSecondaryAction>
                 {edit && (
                   <Link
-                    href={`${baseURL}/${item._id}/edit`}
+                    href={`${baseURL}/edit?${itemName}Id=${item._id}`}
+                    as={`${baseURL}/${item._id}/edit`}
                     key={item._id}
                     prefetch
                   >

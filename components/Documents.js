@@ -164,6 +164,7 @@ class Documents extends React.Component {
         {documents.length > 0 && (
           <CustomList
             items={documents}
+            itemName="document"
             baseURL={`${modelId}/documents`}
             deleteItem={this.deleteDocument}
             icon="document"

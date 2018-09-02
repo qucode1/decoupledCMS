@@ -164,6 +164,7 @@ class Models extends Component {
         {models.length > 0 && (
           <CustomList
             items={models}
+            itemName="model"
             baseURL={`/projects/${project._id}/models`}
             deleteItem={this.deleteModel}
             icon="model"
