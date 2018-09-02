@@ -48,7 +48,7 @@ function Header({
   const { pageTitle } = contextState
   return (
     <AppBar
-      className={`${classes.root}${user && classes.withNav}`}
+      className={`${classes.root} ${user && classes.withNav}`}
       position="fixed"
     >
       <Toolbar className={classes.toolbar}>
