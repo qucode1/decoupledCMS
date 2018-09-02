@@ -24,7 +24,9 @@ try {
   })
 
   const port = process.env.PORT || 8000
-  const ROOT_URL = dev ? `http://localhost:${port}` : "https://mydomain.com"
+  const ROOT_URL = dev
+    ? `http://localhost:${port}`
+    : "https://decoupledcms.now.sh"
 
   const sessionSecret = process.env.SESSION_SECRET
 
