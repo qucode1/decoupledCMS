@@ -72,7 +72,7 @@ modelsRouter.post("/add", isOwner, async (req, res) => {
     await new UserCreatedModel({
       fields: newFields,
       entry,
-      name: `${name} -- ${req.session.passport.user}`,
+      name: `${name} -- ${req.params.projectId}`,
       options: optionsString,
       owner: req.session.passport.user,
       project: req.params.projectId,
