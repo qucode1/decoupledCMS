@@ -72,7 +72,8 @@ try {
     auth({ server, ROOT_URL })
 
     server.use("/user", privateRouter)
-
+    
+    // next.js page routes/ redirects
     server.get("/projects/:projectId", (req, res) => {
       const params = { projectId: req.params.projectId }
       return app.render(req, res, "/projects", params)
@@ -110,6 +111,15 @@ try {
         return app.render(req, res, "/documents", params)
       }
     )
+
+    server.get("/projects/:projectId/models/:modelId/documents/:documentId/edit", (req, res) => {
+      const params = {
+        projectId: req.params.projectId,
+        modelId: req.params.modelId,
+        documentId: req.params.documentId
+      }
+      return app.render(req, res, "/documents/edit", params)
+    })
 
     server.get("*", (req, res) => handle(req, res))
 

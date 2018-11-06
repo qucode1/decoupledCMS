@@ -110,7 +110,7 @@ class NewModelForm extends Component {
       }
       return acc
     }, {})
-    submit({
+    return submit({
       newModelName,
       newModelFields,
       newModelEntry,
@@ -134,7 +134,10 @@ class NewModelForm extends Component {
             values,
             invalid
           }) => (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(val) => handleSubmit(val).then(() => {
+              reset() 
+              if(!updateModel) this.setState({newModelFields: []})
+            })}>
               <div>
                 <Field
                   component={TextField}

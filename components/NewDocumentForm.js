@@ -47,6 +47,7 @@ class NewDocumentForm extends Component {
   render() {
     const { addDocument, updateDocument, fields, initialValues } = this.props
     return (
+
       <Card style={{ padding: "8px" }}>
         <Form
           onSubmit={addDocument || updateDocument}
@@ -60,7 +61,7 @@ class NewDocumentForm extends Component {
             values,
             invalid
           }) => (
-            <form onSubmit={handleSubmit} style={{ margin: "16px 0" }}>
+            <form onSubmit={(val) => handleSubmit(val).then(reset)} style={{ margin: "16px 0" }}>
               {fields
                 .filter(
                   ([name]) => !["owner", "project", "model"].includes(name)

@@ -90,7 +90,7 @@ class Models extends Component {
     } = await fetch(
       `${serverURL}/${this.props.user._id}/projects/${
         this.state.project._id
-      }/models/add`,
+      }/models`,
       {
         method: "POST",
         headers: {
@@ -121,7 +121,7 @@ class Models extends Component {
       user: { _id: userId }
     } = this.props
     const { data, error } = await fetch(
-      `${serverURL}/${userId}/projects/${projectId}/models/${targetId}/delete`,
+      `${serverURL}/${userId}/projects/${projectId}/models/${targetId}`,
       {
         method: "DELETE"
       }

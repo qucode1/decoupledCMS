@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { withStyles } from "@material-ui/core/styles"
 import { defaultRootStyling } from "../lib/SharedStyles"
+import { cleanName } from "../lib/helpers"
 
 import NewProjectForm from "./NewProjectForm"
 
@@ -43,32 +44,42 @@ class Project extends Component {
       })
     } else {
       this.setState({
-        ...projectData
+        ...projectData,
+        name: cleanName(projectData.name)
       })
     }
   }
 
   updateProject = async values => {
-    const {
-      user: { _id: userId },
-      router: {
-        query: { projectId }
+    try {
+      const {
+        user: { _id: userId },
+        router: {
+          query: { projectId }
+        },
+        context: {setPageTitle}
+      } = this.props
+      const {
+        data: { project },
+        error
+      } = await fetch(`${serverURL}/${userId}/projects/${projectId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify({
+          ...values,
+          name: `${values.name} -- ${projectId}`
+        })
+      }).then(res => res.json())
+      if(!error) {
+        this.setState({ ...project, name: cleanName(project.name) })
+        setPageTitle(project.name)
       }
-    } = this.props
-    const {
-      data: { project },
-      error
-    } = await fetch(`${serverURL}/${userId}/projects/${projectId}/update`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json"
-      },
-      body: JSON.stringify({
-        ...values
-      })
-    }).then(res => res.json())
-    !error && this.setState({ ...project })
+    } catch(err) {
+      console.error(`updateProject error: ${err}`)
+    }
   }
 
   render() {

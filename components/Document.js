@@ -60,6 +60,7 @@ class Document extends Component {
       documentError
     } = documentRes
 
+    this.setState({modelData})
     setPageTitle(documentData[modelData.entry] || documentData.name)
 
     if (modelError || documentError) {
@@ -83,13 +84,15 @@ class Document extends Component {
       user: { _id: userId },
       router: {
         query: { projectId, modelId, documentId }
-      }
+      },
+      context: { setPageTitle }
     } = this.props
+    const { modelData } = this.state
     const {
       data: { document },
       error
     } = await fetch(
-      `${serverURL}/${userId}/projects/${projectId}/models/${modelId}/documents/${documentId}/update`,
+      `${serverURL}/${userId}/projects/${projectId}/models/${modelId}/documents/${documentId}`,
       {
         method: "PUT",
         headers: {
@@ -101,7 +104,10 @@ class Document extends Component {
         })
       }
     ).then(res => res.json())
-    !error && this.setState({ ...document })
+    if(!error) {
+      this.setState({ ...document })
+      setPageTitle(document[modelData.entry || "name"])
+    }
   }
 
   render() {

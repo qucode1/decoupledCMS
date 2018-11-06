@@ -48,7 +48,7 @@ documentsRouter.get("/:documentId", isOwner, async (req, res) => {
   }
 })
 
-documentsRouter.post("/add", isOwner, async (req, res) => {
+documentsRouter.post("/", isOwner, async (req, res) => {
   try {
     const documentId = new mongoose.Types.ObjectId()
     const modelData = await UserCreatedModel.findOne({
@@ -83,7 +83,7 @@ documentsRouter.post("/add", isOwner, async (req, res) => {
   }
 })
 
-documentsRouter.put("/:documentId/update", isOwner, async (req, res) => {
+documentsRouter.put("/:documentId", isOwner, async (req, res) => {
   try {
     const modelData = await UserCreatedModel.findOne({
       _id: req.params.modelId
@@ -115,7 +115,7 @@ documentsRouter.put("/:documentId/update", isOwner, async (req, res) => {
   }
 })
 
-documentsRouter.delete("/:documentId/delete", async (req, res) => {
+documentsRouter.delete("/:documentId", async (req, res) => {
   try {
     const modelData = await UserCreatedModel.findOne({
       _id: req.params.modelId

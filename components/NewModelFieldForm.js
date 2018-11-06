@@ -123,7 +123,10 @@ class NewModelFieldForm extends Component {
                   size="small"
                   variant="outlined"
                   disabled={pristine || invalid || disabled}
-                  onClick={handleSubmit}
+                  onClick={() => {
+                    handleSubmit()
+                    reset()
+                  }}
                 >
                   Add Field
                 </Button>

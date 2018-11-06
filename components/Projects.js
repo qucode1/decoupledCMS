@@ -53,7 +53,7 @@ class Projects extends Component {
     const {
       data: { project: newProject },
       error
-    } = await fetch(`${serverURL}/${this.props.user._id}/projects/add`, {
+    } = await fetch(`${serverURL}/${this.props.user._id}/projects`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -72,7 +72,7 @@ class Projects extends Component {
   }
   deleteProject = async id => {
     const { error, data } = await fetch(
-      `${serverURL}/${this.props.user._id}/projects/${id}/delete`,
+      `${serverURL}/${this.props.user._id}/projects/${id}`,
       {
         method: "DELETE"
       }

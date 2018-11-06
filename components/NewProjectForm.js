@@ -15,7 +15,7 @@ class NewProjectForm extends Component {
   submitProject = values => {
     const { addProject, updateProject } = this.props
     const submit = addProject || updateProject
-    submit({ name: values.newProjectName })
+    return submit({ name: values.newProjectName })
   }
   render() {
     const { updateProject, initialValues } = this.props
@@ -33,13 +33,17 @@ class NewProjectForm extends Component {
             pristine,
             values
           }) => (
-            <form onSubmit={handleSubmit} style={{ margin: "16px 0" }}>
+            <form onSubmit={(val) => {
+              handleSubmit(val)
+                .then(reset)
+              }} style={{ margin: "16px 0" }}>
               <div>
                 <Field
                   name="newProjectName"
                   component={TextField}
                   type="text"
                   label="New Project Name"
+                  autoFocus
                 />
               </div>
               <div className="buttons" style={{ marginTop: "16px" }}>

@@ -4,6 +4,7 @@ import { defaultRootStyling } from "../lib/SharedStyles"
 import NewModelForm from "./NewModelForm"
 
 import { serverURL } from "../variables"
+import { cleanName } from "../lib/helpers";
 
 const styles = theme => ({
   root: {
@@ -36,58 +37,71 @@ class Model extends Component {
 
     if (!error) {
       const { fields, options } = model
+      const testObj = {
+        
+      }
       this.setState({
         ...model,
         fields: JSON.parse(fields),
-        options: JSON.parse(options)
+        options: JSON.parse(options),
+        name: cleanName(model.name)
       })
     }
   }
 
-  updateModel = async ({ newModelName, newModelFields, newModelOptions }) => {
-    const {
-      user: { _id: userId },
-      router: {
-        query: { projectId, modelId }
-      }
-    } = this.props
-
-    const {
-      data: { model },
-      error
-    } = await fetch(
-      `${serverURL}/${userId}/projects/${projectId}/models/${modelId}/update`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json"
+  updateModel = async ({ newModelName, newModelFields, newModelEntry, newModelOptions }) => {
+    try {
+      const {
+        user: { _id: userId },
+        router: {
+          query: { projectId, modelId }
         },
-        body: JSON.stringify({
-          name: newModelName,
-          fields: newModelFields,
-          options: newModelOptions
+        context: { setPageTitle }
+      } = this.props
+
+      const {
+        data: { model },
+        error
+      } = await fetch(
+        `${serverURL}/${userId}/projects/${projectId}/models/${modelId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: JSON.stringify({
+            name: `${newModelName} -- ${modelId}`,
+            fields: newModelFields,
+            entry: newModelEntry,
+            options: newModelOptions
+          })
+        }
+      ).then(res => res.json())
+
+      if (!error) {
+        const { fields, options } = model
+        this.setState({
+          ...model,
+          fields: JSON.parse(fields),
+          options: JSON.parse(options),
+          name: cleanName(model.name)
         })
+        setPageTitle(model.name)
       }
-    ).then(res => res.json())
-    if (!error) {
-      const { fields, options } = model
-      this.setState({
-        ...model,
-        fields: JSON.parse(fields),
-        options: JSON.parse(options)
-      })
+    } catch(err) {
+      console.error(`updateModel error: ${err}`)
     }
   }
 
   render() {
-    const { name: newModelName, fields: newModelFields, options } = this.state
+    const { name: newModelName, fields: newModelFields, entry: newModelEntry, options } = this.state
     const { classes } = this.props
     return (
       <div className={classes.root}>
         {newModelName && (
           <NewModelForm
-            initialValues={{ newModelName, newModelFields, ...options }}
+            initialValues={{ newModelName, newModelFields, newModelEntry, ...options }}
             updateModel={this.updateModel}
           />
         )}

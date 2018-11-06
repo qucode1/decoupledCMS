@@ -57,7 +57,7 @@ modelsRouter.get("/:modelId", async (req, res) => {
   }
 })
 
-modelsRouter.post("/add", isOwner, async (req, res) => {
+modelsRouter.post("/", isOwner, async (req, res) => {
   try {
     const modelId = new mongoose.Types.ObjectId()
 
@@ -96,7 +96,7 @@ modelsRouter.post("/add", isOwner, async (req, res) => {
   }
 })
 
-modelsRouter.put("/:modelId/update", isOwner, async (req, res) => {
+modelsRouter.put("/:modelId", isOwner, async (req, res) => {
   try {
     const modelId = req.params.modelId
     const model = await UserCreatedModel.findOne({ _id: modelId })
@@ -129,7 +129,7 @@ modelsRouter.put("/:modelId/update", isOwner, async (req, res) => {
   }
 })
 
-modelsRouter.delete("/:modelId/delete", isOwner, async (req, res) => {
+modelsRouter.delete("/:modelId", isOwner, async (req, res) => {
   try {
     const model = await UserCreatedModel.findOne({
       _id: req.params.modelId

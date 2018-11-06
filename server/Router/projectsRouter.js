@@ -51,7 +51,7 @@ projectsRouter.get("/:projectId", isOwner, async (req, res) => {
   }
 })
 
-projectsRouter.put("/:projectId/update", isOwner, async (req, res) => {
+projectsRouter.put("/:projectId", isOwner, async (req, res) => {
   try {
     const project = await Project.findOne({ _id: req.params.projectId })
     if (project.owner.toString() === req.params.user) {
@@ -74,7 +74,7 @@ projectsRouter.put("/:projectId/update", isOwner, async (req, res) => {
   }
 })
 
-projectsRouter.post("/add", isOwner, async (req, res) => {
+projectsRouter.post("/", isOwner, async (req, res) => {
   try {
     console.log(`/projects/add req`, req.body)
     const projectId = new mongoose.Types.ObjectId()
@@ -102,7 +102,7 @@ projectsRouter.post("/add", isOwner, async (req, res) => {
   }
 })
 
-projectsRouter.delete("/:projectId/delete", isOwner, async (req, res) => {
+projectsRouter.delete("/:projectId", isOwner, async (req, res) => {
   try {
     const userCreatedModels = await UserCreatedModel.find({
       project: req.params.projectId

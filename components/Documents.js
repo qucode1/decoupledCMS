@@ -85,7 +85,7 @@ class Documents extends React.Component {
     } = this.props
     const { documents } = this.state
     const { data, error } = await fetch(
-      `${serverURL}/${userId}/projects/${projectId}/models/${modelId}/documents/add`,
+      `${serverURL}/${userId}/projects/${projectId}/models/${modelId}/documents`,
       {
         method: "POST",
         headers: {
@@ -109,7 +109,7 @@ class Documents extends React.Component {
     } = this.props
     const { id: modelId, project: projectId } = this.state
     const { data, error } = await fetch(
-      `${serverURL}/${userId}/projects/${projectId}/models/${modelId}/documents/${targetId}/delete`,
+      `${serverURL}/${userId}/projects/${projectId}/models/${modelId}/documents/${targetId}`,
       {
         method: "DELETE"
       }
@@ -170,6 +170,7 @@ class Documents extends React.Component {
             deleteItem={this.deleteDocument}
             icon="document"
             entry={entry}
+            edit
           />
         )}
       </div>
