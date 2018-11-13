@@ -30,7 +30,8 @@
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-final-form": "^3.6.5",
-    "react-jss": "^8.6.0"
+    "react-jss": "^8.6.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.5",
