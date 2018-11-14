@@ -17,9 +17,9 @@ const {
 
 const modelsRouter = require("./modelsRouter");
 
-projectsRouter.use("/:projectId/models", modelsRouter);
+projectsRouter.use("/:projectId/models", isOwner, modelsRouter);
 
-projectsRouter.get("/", async (req, res) => {
+projectsRouter.get("/", isOwner, async (req, res) => {
   try {
     const { projects } = await User.findOne(
       { _id: req.params.user },

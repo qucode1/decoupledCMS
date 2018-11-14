@@ -7,8 +7,6 @@ const { Project } = require("../models/Project");
 const { UserCreatedModel } = require("../models/UserCreatedModel");
 const User = require("../models/User");
 
-const { isOwner } = require("../utils/middleware");
-
 const { UnexpectedRoutingError } = require("../utils/errorHandling");
 
 documentsRouter.get("/", async (req, res) => {
@@ -31,7 +29,7 @@ documentsRouter.get("/", async (req, res) => {
   }
 });
 
-documentsRouter.get("/:documentId", isOwner, async (req, res) => {
+documentsRouter.get("/:documentId", async (req, res) => {
   try {
     const { _id, name, fields, options } = await UserCreatedModel.findOne({
       _id: req.params.modelId
@@ -48,7 +46,7 @@ documentsRouter.get("/:documentId", isOwner, async (req, res) => {
   }
 });
 
-documentsRouter.post("/", isOwner, async (req, res) => {
+documentsRouter.post("/", async (req, res) => {
   try {
     const documentId = new mongoose.Types.ObjectId();
     const modelData = await UserCreatedModel.findOne({
@@ -83,7 +81,7 @@ documentsRouter.post("/", isOwner, async (req, res) => {
   }
 });
 
-documentsRouter.put("/:documentId", isOwner, async (req, res) => {
+documentsRouter.put("/:documentId", async (req, res) => {
   try {
     const modelData = await UserCreatedModel.findOne({
       _id: req.params.modelId

@@ -60,7 +60,7 @@ class NewProjectForm extends Component {
         newValidOrigins: newValidOrigins.filter(o => o !== obsolete)
       }));
     } else {
-      console.log("obsolete", obsolete);
+      // console.log("obsolete", obsolete);
       this.setState(({ validOrigins, removedValidOrigins }) => ({
         validOrigins: validOrigins.filter(o => o.name !== obsolete.name),
         removedValidOrigins: [...removedValidOrigins, obsolete._id]
