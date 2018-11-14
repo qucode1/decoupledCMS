@@ -50,6 +50,7 @@ class Projects extends Component {
   toggleNewProjectForm = () =>
     this.setState({ showNewProjectForm: !this.state.showNewProjectForm });
   addProject = async values => {
+    const { name, validOrigins, newValidOrigins, removedValidOrigins } = values;
     const {
       data: { project: newProject },
       error
@@ -61,8 +62,10 @@ class Projects extends Component {
         // "Content-Type": "application/x-www-form-urlencoded"
       },
       body: JSON.stringify({
-        name: values.name,
-        validOrigins: values.validOrigins
+        name,
+        validOrigins,
+        newValidOrigins,
+        removedValidOrigins
       })
     }).then(res => res.json());
 

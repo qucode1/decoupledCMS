@@ -1,11 +1,11 @@
-import React, { Component } from "react"
-import { withStyles } from "@material-ui/core/styles"
-import { defaultRootStyling } from "../lib/SharedStyles"
-import { cleanName } from "../lib/helpers"
+import React, { Component } from "react";
+import { withStyles } from "@material-ui/core/styles";
+import { defaultRootStyling } from "../lib/SharedStyles";
+import { cleanName } from "../lib/helpers";
 
-import NewProjectForm from "./NewProjectForm"
+import NewProjectForm from "./NewProjectForm";
 
-import { serverURL } from "../variables"
+import { serverURL } from "../variables";
 
 const styles = theme => ({
   root: {
@@ -14,10 +14,10 @@ const styles = theme => ({
       padding: `${theme.spacing.unit * 5}px`
     }
   }
-})
+});
 
 class Project extends Component {
-  state = {}
+  state = {};
   async componentDidMount() {
     const {
       router: {
@@ -25,28 +25,28 @@ class Project extends Component {
       },
       user: { _id: userId },
       context: { setPageTitle }
-    } = this.props
+    } = this.props;
 
     const projectRes = await fetch(
       `${serverURL}/${userId}/projects/${projectId}/`
-    ).then(res => res.json())
+    ).then(res => res.json());
 
     const {
       data: { project: projectData },
       projectError
-    } = projectRes
+    } = projectRes;
 
-    setPageTitle(projectData.name)
+    setPageTitle(projectData.name);
 
     if (projectError) {
       this.setState({
         error: projectError
-      })
+      });
     } else {
       this.setState({
         ...projectData,
         name: cleanName(projectData.name)
-      })
+      });
     }
   }
 
@@ -57,8 +57,8 @@ class Project extends Component {
         router: {
           query: { projectId }
         },
-        context: {setPageTitle}
-      } = this.props
+        context: { setPageTitle }
+      } = this.props;
       const {
         data: { project },
         error
@@ -72,15 +72,15 @@ class Project extends Component {
           ...values,
           name: `${values.name} -- ${projectId}`
         })
-      }).then(res => res.json())
-      if(!error) {
-        this.setState({ ...project, name: cleanName(project.name) })
-        setPageTitle(project.name)
+      }).then(res => res.json());
+      if (!error) {
+        this.setState({ ...project, name: cleanName(project.name) });
+        setPageTitle(project.name);
       }
-    } catch(err) {
-      console.error(`updateProject error: ${err}`)
+    } catch (err) {
+      console.error(`updateProject error: ${err}`);
     }
-  }
+  };
 
   render() {
     const {
@@ -88,18 +88,21 @@ class Project extends Component {
         query: { projectId }
       },
       classes
-    } = this.props
+    } = this.props;
     return (
       <div className={classes.root}>
         {this.state.name && (
           <NewProjectForm
-            initialValues={{ newProjectName: this.state.name }}
+            initialValues={{
+              newProjectName: this.state.name,
+              newProjectValidOrigins: this.state.validOrigins
+            }}
             updateProject={this.updateProject}
           />
         )}
       </div>
-    )
+    );
   }
 }
 
-export default withStyles(styles)(Project)
+export default withStyles(styles)(Project);

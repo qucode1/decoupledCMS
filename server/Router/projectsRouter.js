@@ -60,17 +60,58 @@ projectsRouter.get("/:projectId", isOwner, async (req, res) => {
 
 projectsRouter.put("/:projectId", isOwner, async (req, res) => {
   try {
+    // console.log(`/projects/ put`, req.body, "\n\n");
     const project = await Project.findOne({ _id: req.params.projectId });
+    // console.log("project base", req.body, "\n\n");
+    const { removedValidOrigins } = req.body;
     if (project.owner.toString() === req.params.user) {
       Object.keys(req.body).forEach(key => {
-        if (!["owner", "models"].includes(key)) {
+        if (
+          ![
+            "owner",
+            "models",
+            "validOrigins",
+            "newValidOrigins",
+            "removedValidOrigins"
+          ].includes(key)
+        ) {
           project[key] = req.body[key];
         }
       });
-      const savedProject = await project.save();
+      const newOrigins = req.body.newValidOrigins
+        ? req.body.newValidOrigins.map(
+            name =>
+              new Origin({
+                id: new mongoose.Types.ObjectId(),
+                name: name,
+                apiKey: uuid(),
+                owner: req.session.passport.user
+              })
+          )
+        : [];
+      const filteredOrigins = project.validOrigins.filter(o => {
+        return !removedValidOrigins.includes(String(o));
+      });
+      // console.log("filteredOrigins", filteredOrigins);
+      // console.log("newOrigins", newOrigins, "\n\n");
+      project.validOrigins = [...filteredOrigins, ...newOrigins];
+      // console.log("project new", project, "\n\n");
+      const [savedProject, ...rest] = await Promise.all([
+        project.save(),
+        ...newOrigins.map(async o => await o.save()),
+        ...removedValidOrigins.map(
+          async o => await Origin.deleteOne({ _id: o })
+        )
+      ]);
+      const populatedProject = await Project.findById({
+        _id: savedProject._id
+      }).populate({
+        path: "validOrigins",
+        model: Origin
+      });
       res.json({
         data: {
-          project: savedProject
+          project: populatedProject
         }
       });
     } else {
@@ -83,10 +124,10 @@ projectsRouter.put("/:projectId", isOwner, async (req, res) => {
 
 projectsRouter.post("/", isOwner, async (req, res) => {
   try {
-    console.log(`/projects/add req`, req.body);
+    // console.log(`/projects/add req`, req.body);
     const projectId = new mongoose.Types.ObjectId();
-    const origins = req.body.validOrigins
-      ? req.body.validOrigins.map(
+    const origins = req.body.newValidOrigins
+      ? req.body.newValidOrigins.map(
           name =>
             new Origin({
               id: new mongoose.Types.ObjectId(),
@@ -130,17 +171,26 @@ projectsRouter.delete("/:projectId", isOwner, async (req, res) => {
     const userCreatedModels = await UserCreatedModel.find({
       project: req.params.projectId
     });
+    const project = await Project.findById(req.params.projectId);
     for (const userCreatedModel of userCreatedModels) {
       const { name, fields, options } = userCreatedModel;
       const Model = createModel(name, fields, options);
-      // await Model.deleteMany({ project: req.params.projectId })
       const modelName = Model.modelName;
       await Model.collection.drop();
       delete mongoose.models[modelName];
       delete mongoose.modelSchemas[modelName];
     }
     await UserCreatedModel.deleteMany({ project: req.params.projectId });
-    await Project.findByIdAndRemove({ _id: req.params.projectId });
+
+    await Promise.all([
+      ...project.validOrigins.map(async o => {
+        const toDelete = typeof o === "object" ? String(o._id) : String(o);
+        await Origin.deleteOne({ _id: toDelete });
+      })
+    ]);
+
+    await Project.deleteOne({ _id: req.params.projectId });
+
     await User.findByIdAndUpdate(
       { _id: req.user._id },
       {
