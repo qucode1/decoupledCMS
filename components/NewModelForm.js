@@ -6,13 +6,37 @@ import PropTypes from "prop-types";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import AddIcon from "@material-ui/icons/Add";
-import DeleteIcon from "@material-ui/icons/Delete";
 import ClearIcon from "@material-ui/icons/Clear";
 import Card from "@material-ui/core/Card";
 import MenuItem from "@material-ui/core/MenuItem";
 import Wrapper from "./formElements/Wrapper";
 import NewModelFieldForm from "./NewModelFieldForm";
 import Select from "./formElements/Select";
+import { withStyles } from "@material-ui/core/styles";
+
+const styles = theme => ({
+  root: {
+    padding: "8px"
+  },
+  formElement: {
+    margin: "20px 0",
+    "&:first-of-type": {
+      margin: "0"
+    }
+  },
+  subheading: { margin: "8px 8px 8px 0" },
+  newModelFieldsControls: {
+    display: "flex",
+    alignItems: "center"
+  },
+  newModelFieldContainer: { margin: "16px 0" },
+  newModelField: {
+    margin: "5px 0",
+    padding: "5px 0",
+    borderBottom: "1px dotted rgba(0,0,0,0.3)"
+  },
+  formControls: { display: "block" }
+});
 
 class NewModelForm extends Component {
   state = {
@@ -129,12 +153,12 @@ class NewModelForm extends Component {
   };
   render() {
     const { newModelFields, showNewFieldForm } = this.state;
-    const { initialValues, addModel, updateModel } = this.props;
+    const { initialValues, addModel, updateModel, classes } = this.props;
     const filteredNewModelFields = newModelFields.filter(
       ([fieldName]) => !["owner", "project", "model"].includes(fieldName)
     );
     return (
-      <Card style={{ padding: "8px" }}>
+      <Card className={classes.root}>
         <Form
           onSubmit={this.submitModel}
           validate={this.validate}
@@ -152,7 +176,7 @@ class NewModelForm extends Component {
                 handleSubmit(val).then(() => this.customReset(reset))
               }
             >
-              <div>
+              <div className={classes.formElement}>
                 <Field
                   component={TextField}
                   name="newModelName"
@@ -160,102 +184,110 @@ class NewModelForm extends Component {
                   label="Model Name"
                 />
               </div>
-              <Field name="newModelFields" component={Wrapper}>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <Typography
-                    variant="subheading"
-                    style={{ marginRight: "8px" }}
-                  >
-                    Model Fields ({filteredNewModelFields.length})
-                  </Typography>
-                  <Button
-                    color="primary"
-                    size="small"
-                    onClick={this.toggleNewFieldForm}
-                  >
-                    {showNewFieldForm ? (
-                      <Fragment>
-                        <ClearIcon />
-                        Discard Field
-                      </Fragment>
-                    ) : (
-                      <Fragment>
-                        <AddIcon />
-                        New Field
-                      </Fragment>
-                    )}
-                  </Button>
-                </div>
-              </Field>
-
-              {showNewFieldForm && (
-                <NewModelFieldForm
-                  addField={fieldData => {
-                    const { newModelFields = [] } = values;
-                    this.addField(fieldData);
-                    change("newModelFields", [
-                      ...newModelFields,
-                      this.state.newModelFields
-                    ]);
-                  }}
-                />
-              )}
-              {newModelFields.length > 0 && <hr />}
-              <div style={{ margin: "16px 0" }}>
-                {filteredNewModelFields.map((field, index) => {
-                  const [fieldName, fieldType, fieldOptions] = field;
-                  return (
-                    <div
-                      key={`newModelFields[${index}]`}
-                      style={{
-                        margin: "5px 0",
-                        padding: "5px 0",
-                        borderBottom: "1px dotted rgba(0,0,0,0.3)"
-                      }}
+              <div className={classes.formElement}>
+                <Field name="newModelFields" component={Wrapper}>
+                  <div className={classes.newModelFieldsControls}>
+                    <Typography
+                      variant="subheading"
+                      className={classes.subheading}
                     >
-                      <NewModelFieldForm
-                        initialValues={{ fieldName, fieldType, fieldOptions }}
-                        disabled
-                        removeField={() => {
-                          const { newModelFields = [] } = values;
-                          this.removeField(index);
-                          change(
-                            "newModelFields",
-                            newModelFields.filter((f, i) => i !== index)
-                          );
-                        }}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-              {newModelFields.length > 0 && <hr />}
-              <Field
-                component={Select}
-                displayEmpty
-                name="newModelEntry"
-                label="Entry Field"
-                validate={this.required}
-              >
-                <MenuItem value="">
-                  <em>Entry Field</em>
-                </MenuItem>
-                {newModelFields.map((field, fieldIndex) => (
-                  <MenuItem key={`selectEntry-${fieldIndex}`} value={field[0]}>
-                    {field[0]}
-                  </MenuItem>
-                ))}
-              </Field>
-              <Typography variant="subheading" style={{ margin: "8px 0" }}>
-                Model Options
-              </Typography>
-              {this.modelOptions.map((option, index) => (
-                <div key={`modelOption-${index}`}>
-                  <Field name={option} component={Checkbox} type="checkbox" />
-                  <label>{option}</label>
+                      Model Fields ({filteredNewModelFields.length})
+                    </Typography>
+                    <Button
+                      color="primary"
+                      size="small"
+                      onClick={this.toggleNewFieldForm}
+                    >
+                      {showNewFieldForm ? (
+                        <Fragment>
+                          <ClearIcon />
+                          Discard Field
+                        </Fragment>
+                      ) : (
+                        <Fragment>
+                          <AddIcon />
+                          New Field
+                        </Fragment>
+                      )}
+                    </Button>
+                  </div>
+                </Field>
+
+                {showNewFieldForm && (
+                  <NewModelFieldForm
+                    addField={fieldData => {
+                      const { newModelFields = [] } = values;
+                      this.addField(fieldData);
+                      change("newModelFields", [
+                        ...newModelFields,
+                        this.state.newModelFields
+                      ]);
+                    }}
+                  />
+                )}
+                {newModelFields.length > 0 && <hr />}
+                <div className={classes.newModelFieldContainer}>
+                  {filteredNewModelFields.map((field, index) => {
+                    const [fieldName, fieldType, fieldOptions] = field;
+                    return (
+                      <div
+                        key={`newModelFields[${index}]`}
+                        className={classes.newModelField}
+                      >
+                        <NewModelFieldForm
+                          initialValues={{ fieldName, fieldType, fieldOptions }}
+                          disabled
+                          removeField={() => {
+                            const { newModelFields = [] } = values;
+                            this.removeField(index);
+                            change(
+                              "newModelFields",
+                              newModelFields.filter((f, i) => i !== index)
+                            );
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
-              <div style={{ display: "block" }}>
+                {newModelFields.length > 0 && <hr />}
+              </div>
+              <div className={classes.formElement}>
+                <Typography variant="subheading" className={classes.subheading}>
+                  Model Entry
+                </Typography>
+                <Field
+                  component={Select}
+                  displayEmpty
+                  name="newModelEntry"
+                  label="Entry Field"
+                  validate={this.required}
+                >
+                  <MenuItem value="">
+                    <em>Entry Field</em>
+                  </MenuItem>
+                  {newModelFields.map((field, fieldIndex) => (
+                    <MenuItem
+                      key={`selectEntry-${fieldIndex}`}
+                      value={field[0]}
+                    >
+                      {field[0]}
+                    </MenuItem>
+                  ))}
+                </Field>
+              </div>
+              <div className={classes.formElement}>
+                <Typography variant="subheading" className={classes.subheading}>
+                  Model Options
+                </Typography>
+                {this.modelOptions.map((option, index) => (
+                  <div key={`modelOption-${index}`}>
+                    <Field name={option} component={Checkbox} type="checkbox" />
+                    <label>{option}</label>
+                  </div>
+                ))}
+              </div>
+              <div className={classes.formControls}>
                 <Button
                   color="primary"
                   size="small"
@@ -286,4 +318,4 @@ NewModelForm.propTypes = {
   addModel: PropTypes.func
 };
 
-export default NewModelForm;
+export default withStyles(styles)(NewModelForm);
