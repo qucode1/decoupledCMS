@@ -1,12 +1,12 @@
-import React, { Component, Fragment } from "react"
-import { Form, Field } from "react-final-form"
-import Select from "./formElements/Select"
-import TextField from "./formElements/TextField"
-import Checkbox from "./formElements/Checkbox"
-import MenuItem from "@material-ui/core/MenuItem"
-import Button from "@material-ui/core/Button"
-import DeleteIcon from "@material-ui/icons/Delete"
-import { withStyles } from "@material-ui/core/styles"
+import React, { Component, Fragment } from "react";
+import { Form, Field } from "react-final-form";
+import Select from "./formElements/Select";
+import TextField from "./formElements/TextField";
+import Checkbox from "./formElements/Checkbox";
+import MenuItem from "@material-ui/core/MenuItem";
+import Button from "@material-ui/core/Button";
+import DeleteIcon from "@material-ui/icons/Delete";
+import { withStyles } from "@material-ui/core/styles";
 
 const styles = theme => ({
   root: {
@@ -17,14 +17,15 @@ const styles = theme => ({
   },
   deleteBtn: {
     color: theme.palette.error.main,
+    alignSelf: "center",
     "&:hover": {
       backgroundColor: "#ffe7e7"
     }
   }
-})
+});
 
 class NewModelFieldForm extends Component {
-  required = value => (value ? undefined : "Required")
+  required = value => (value ? undefined : "Required");
 
   render() {
     const {
@@ -36,7 +37,7 @@ class NewModelFieldForm extends Component {
         fieldOptions: { required, unique } = {},
         ...initialValues
       } = {}
-    } = this.props
+    } = this.props;
     return (
       <Form
         style={{
@@ -50,7 +51,7 @@ class NewModelFieldForm extends Component {
           backgroundColor: disabled ? "aliceblue" : "inherit"
         }}
         onSubmit={({ fieldName, fieldType, required, unique, ...rest }) => {
-          addField([fieldName, fieldType, { required, unique }])
+          addField([fieldName, fieldType, { required, unique }]);
         }}
         initialValues={{ ...initialValues, required, unique }}
         render={({
@@ -124,8 +125,8 @@ class NewModelFieldForm extends Component {
                   variant="outlined"
                   disabled={pristine || invalid || disabled}
                   onClick={() => {
-                    handleSubmit()
-                    reset()
+                    handleSubmit();
+                    reset();
                   }}
                 >
                   Add Field
@@ -135,10 +136,10 @@ class NewModelFieldForm extends Component {
           </div>
         )}
       />
-    )
+    );
   }
 }
 
-NewModelFieldForm.propTypes = {}
+NewModelFieldForm.propTypes = {};
 
-export default withStyles(styles)(NewModelFieldForm)
+export default withStyles(styles)(NewModelFieldForm);

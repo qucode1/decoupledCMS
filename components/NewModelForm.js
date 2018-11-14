@@ -1,18 +1,18 @@
-import React, { Component, Fragment } from "react"
-import { Form, Field } from "react-final-form"
-import TextField from "../components/formElements/TextField"
-import Checkbox from "../components/formElements/Checkbox"
-import PropTypes from "prop-types"
-import Typography from "@material-ui/core/Typography"
-import Button from "@material-ui/core/Button"
-import AddIcon from "@material-ui/icons/Add"
-import DeleteIcon from "@material-ui/icons/Delete"
-import ClearIcon from "@material-ui/icons/Clear"
-import Card from "@material-ui/core/Card"
-import MenuItem from "@material-ui/core/MenuItem"
-import Wrapper from "./formElements/Wrapper"
-import NewModelFieldForm from "./NewModelFieldForm"
-import Select from "./formElements/Select"
+import React, { Component, Fragment } from "react";
+import { Form, Field } from "react-final-form";
+import TextField from "../components/formElements/TextField";
+import Checkbox from "../components/formElements/Checkbox";
+import PropTypes from "prop-types";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import AddIcon from "@material-ui/icons/Add";
+import DeleteIcon from "@material-ui/icons/Delete";
+import ClearIcon from "@material-ui/icons/Clear";
+import Card from "@material-ui/core/Card";
+import MenuItem from "@material-ui/core/MenuItem";
+import Wrapper from "./formElements/Wrapper";
+import NewModelFieldForm from "./NewModelFieldForm";
+import Select from "./formElements/Select";
 
 class NewModelForm extends Component {
   state = {
@@ -21,11 +21,11 @@ class NewModelForm extends Component {
     newModelOptions: {},
     timestamps: false,
     showNewFieldForm: false
-  }
+  };
 
-  modelOptions = ["timestamps"]
+  modelOptions = ["timestamps"];
   componentDidMount() {
-    const { initialValues } = this.props
+    const { initialValues } = this.props;
     if (
       initialValues &&
       initialValues.newModelFields &&
@@ -33,93 +33,106 @@ class NewModelForm extends Component {
     ) {
       this.setState({
         newModelFields: initialValues.newModelFields
-      })
+      });
     }
   }
 
   validate = values => {
-    const errors = {}
+    const errors = {};
     if (!values.newModelName) {
-      errors.newModelName = "Required"
+      errors.newModelName = "Required";
     }
     if (!values.newModelFields || !values.newModelFields.length) {
-      errors.newModelFields = "You need to add at least one field."
+      errors.newModelFields = "You need to add at least one field.";
     }
-    return errors
-  }
+    return errors;
+  };
 
   changeTextInput = e => {
     this.setState({
       [e.target.name]: !!!this.state[e.target.name]
-    })
-  }
+    });
+  };
 
-  required = value => (value ? undefined : "Required")
+  required = value => (value ? undefined : "Required");
 
   composeValidators = (...validators) => value => {
     validators.reduce(
       (error, validator) => error || validator(value),
       undefined
-    )
-  }
+    );
+  };
 
   handleChange = name => event => {
-    const { target } = event
+    const { target } = event;
     name === "newModelOptions"
       ? this.setState(prevState => {
-          const options = { ...prevState.newModelOptions }
+          const options = { ...prevState.newModelOptions };
           return {
             newModelOptions: {
               ...options,
               [target.value]: target.checked
             }
-          }
+          };
         })
       : this.setState({
           [name]: target.value
-        })
-  }
+        });
+  };
 
   toggleNewFieldForm = () => {
     this.setState({
       showNewFieldForm: !this.state.showNewFieldForm
-    })
-  }
+    });
+  };
 
   addField = field => {
     this.setState(prevState => ({
       newModelFields: [...prevState.newModelFields, field]
-    }))
-  }
+    }));
+  };
 
   removeField = targetIndex => {
     this.setState(prevState => ({
       newModelFields: prevState.newModelFields.filter(
         (_, index) => index !== targetIndex
       )
-    }))
-  }
+    }));
+  };
 
   submitModel = ({ newModelName, newModelEntry, ...values }) => {
-    const { newModelFields = [] } = this.state
-    const { addModel, updateModel } = this.props
-    const submit = addModel || updateModel
+    const { newModelFields = [] } = this.state;
+    const { addModel, updateModel } = this.props;
+    const submit = addModel || updateModel;
     const newModelOptions = this.modelOptions.reduce((acc, option) => {
       if (values[option]) {
-        acc[option] = values[option]
+        acc[option] = values[option];
       }
-      return acc
-    }, {})
+      return acc;
+    }, {});
     return submit({
       newModelName,
       newModelFields,
       newModelEntry,
       newModelOptions
-    })
-  }
+    });
+  };
+  customReset = reset => {
+    const { updateModel, initialValues } = this.props;
+    reset();
+    if (!updateModel) this.setState({ newModelFields: [] });
+    else {
+      this.setState({
+        newModelFields: initialValues.newModelFields
+      });
+    }
+  };
   render() {
-    const { newModelFields, showNewFieldForm } = this.state
-    const { initialValues, addModel, updateModel } = this.props
+    const { newModelFields, showNewFieldForm } = this.state;
+    const { initialValues, addModel, updateModel } = this.props;
+    const filteredNewModelFields = newModelFields.filter(
+      ([fieldName]) => !["owner", "project", "model"].includes(fieldName)
+    );
     return (
       <Card style={{ padding: "8px" }}>
         <Form
@@ -134,10 +147,11 @@ class NewModelForm extends Component {
             values,
             invalid
           }) => (
-            <form onSubmit={(val) => handleSubmit(val).then(() => {
-              reset() 
-              if(!updateModel) this.setState({newModelFields: []})
-            })}>
+            <form
+              onSubmit={val =>
+                handleSubmit(val).then(() => this.customReset(reset))
+              }
+            >
               <div>
                 <Field
                   component={TextField}
@@ -152,7 +166,7 @@ class NewModelForm extends Component {
                     variant="subheading"
                     style={{ marginRight: "8px" }}
                   >
-                    Model Fields
+                    Model Fields ({filteredNewModelFields.length})
                   </Typography>
                   <Button
                     color="primary"
@@ -177,41 +191,43 @@ class NewModelForm extends Component {
               {showNewFieldForm && (
                 <NewModelFieldForm
                   addField={fieldData => {
-                    const { newModelFields = [] } = values
-                    this.addField(fieldData)
+                    const { newModelFields = [] } = values;
+                    this.addField(fieldData);
                     change("newModelFields", [
                       ...newModelFields,
                       this.state.newModelFields
-                    ])
+                    ]);
                   }}
                 />
               )}
               {newModelFields.length > 0 && <hr />}
               <div style={{ margin: "16px 0" }}>
-                {newModelFields
-                  .filter(
-                    ([fieldName]) =>
-                      !["owner", "project", "model"].includes(fieldName)
-                  )
-                  .map((field, index) => {
-                    const [fieldName, fieldType, fieldOptions] = field
-                    return (
-                      <div key={`newModelFields[${index}]`}>
-                        <NewModelFieldForm
-                          initialValues={{ fieldName, fieldType, fieldOptions }}
-                          disabled
-                          removeField={() => {
-                            const { newModelFields = [] } = values
-                            this.removeField(index)
-                            change(
-                              "newModelFields",
-                              newModelFields.filter((f, i) => i !== index)
-                            )
-                          }}
-                        />
-                      </div>
-                    )
-                  })}
+                {filteredNewModelFields.map((field, index) => {
+                  const [fieldName, fieldType, fieldOptions] = field;
+                  return (
+                    <div
+                      key={`newModelFields[${index}]`}
+                      style={{
+                        margin: "5px 0",
+                        padding: "5px 0",
+                        borderBottom: "1px dotted rgba(0,0,0,0.3)"
+                      }}
+                    >
+                      <NewModelFieldForm
+                        initialValues={{ fieldName, fieldType, fieldOptions }}
+                        disabled
+                        removeField={() => {
+                          const { newModelFields = [] } = values;
+                          this.removeField(index);
+                          change(
+                            "newModelFields",
+                            newModelFields.filter((f, i) => i !== index)
+                          );
+                        }}
+                      />
+                    </div>
+                  );
+                })}
               </div>
               {newModelFields.length > 0 && <hr />}
               <Field
@@ -252,7 +268,7 @@ class NewModelForm extends Component {
                 <Button
                   type="button"
                   color="secondary"
-                  onClick={reset}
+                  onClick={() => this.customReset(reset)}
                   disabled={submitting || pristine}
                 >
                   Reset
@@ -261,88 +277,13 @@ class NewModelForm extends Component {
             </form>
           )}
         />
-        {/* <TextField
-          id="newModelName"
-          label="Model Name"
-          value={this.state.newModelName}
-          margin="normal"
-          onChange={this.handleChange("newModelName")}
-        />
-        <div
-          style={{ display: "flex", alignItems: "center", margin: "8px 0 0 0" }}
-        >
-          <Typography variant="subheading" style={{ marginRight: "8px" }}>
-            Model Fields
-          </Typography>
-          <Button
-            color="primary"
-            size="small"
-            onClick={this.toggleNewFieldForm}
-          >
-            {showNewFieldForm ? (
-              <Fragment>
-                <ClearIcon />
-                Discard Field
-              </Fragment>
-            ) : (
-              <Fragment>
-                <AddIcon />
-                New Field
-              </Fragment>
-            )}
-          </Button>
-        </div>
-        {showNewFieldForm && <NewModelFieldForm addField={this.addField} />}
-        <div style={{ margin: "16px 0" }}>
-          {newModelFields.map((field, index) => {
-            const [fieldName, fieldType, fieldOptions] = field
-            return (
-              <div key={`newModelFields[${index}]`}>
-                <NewModelFieldForm
-                  defaultValues={{ fieldName, fieldType, fieldOptions }}
-                  disabled
-                  removeField={() => this.removeField(index)}
-                />
-              </div>
-            )
-          })}
-        </div>
-        <Typography variant="subheading" style={{ margin: "8px 0" }}>
-          Model Options
-        </Typography>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={NewModelFieldForm.timestamps}
-              value="timestamps"
-              onChange={this.handleChange("newModelOptions")}
-            />
-          }
-          label="timestamps"
-        />
-        <div style={{ display: "block" }}>
-          <Button
-            color="primary"
-            size="small"
-            variant="contained"
-            onClick={() =>
-              this.props.addModel({
-                newModelName,
-                newModelFields,
-                newModelOptions
-              })
-            }
-          >
-            Add Model
-          </Button>
-        </div> */}
       </Card>
-    )
+    );
   }
 }
 
 NewModelForm.propTypes = {
   addModel: PropTypes.func
-}
+};
 
-export default NewModelForm
+export default NewModelForm;
