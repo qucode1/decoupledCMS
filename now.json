@@ -12,7 +12,7 @@
   },
   "build": {
     "env": {
-      "MONGO_URL_TEST": "@decoupledcms-mongo-srv",
+      "MONGO_URL": "@decoupledcms-mongo-srv",
       "Google_clientID": "@decoupledcms-google-clientid",
       "Google_clientSecret": "@decoupledcms-google-clientsecret",
       "SESSION_SECRET": "@decoupledcms-sessionsecret"
