@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { withStyles } from "@material-ui/core/styles";
 
-import Tooltip from "./Tooltip";
+import CopyBtn from "./CopyBtn";
 
 const styles = theme => ({
   root: { padding: "8px" },
@@ -49,12 +49,7 @@ class NewProjectForm extends Component {
   state = {
     validOrigins: [],
     newValidOrigins: [],
-    removedValidOrigins: [],
-    showTooltip: false,
-    tooltipPosition: [0, 0],
-    currentApiKey: "",
-    tooltipTimeout: null,
-    timeoutTimer: 300
+    removedValidOrigins: []
   };
   addOrigin = origin => {
     this.setState(({ newValidOrigins }) => ({
@@ -102,40 +97,6 @@ class NewProjectForm extends Component {
     });
     reset();
   };
-  handleCopyClick = apiKey => {
-    navigator.permissions.query({ name: "clipboard-write" }).then(result => {
-      if (result.state == "granted" || result.state == "prompt") {
-        /* write to the clipboard now */
-        navigator.clipboard.writeText(apiKey).then(
-          function() {
-            /* clipboard successfully set */
-          },
-          function() {
-            /* clipboard write failed */
-            console.log("copy failure");
-          }
-        );
-      }
-    });
-  };
-
-  handleMouseEnter = (e, currentApiKey) => {
-    this.setState({
-      showTooltip: true,
-      tooltipPosition: [e.clientX, e.clientY],
-      currentApiKey
-    });
-    clearTimeout(this.state.tooltipTimeout);
-  };
-
-  handleMouseLeave = () => {
-    const tooltipTimeout = setTimeout(() => {
-      this.setState({ showTooltip: false, currentApiKey: "" });
-    }, this.state.timeoutTimer);
-    this.setState({
-      tooltipTimeout
-    });
-  };
 
   componentDidMount() {
     const {
@@ -145,13 +106,7 @@ class NewProjectForm extends Component {
   }
   render() {
     const { updateProject, initialValues, classes } = this.props;
-    const {
-      validOrigins,
-      newValidOrigins,
-      removedValidOrigins,
-      currentApiKey,
-      tooltipPosition
-    } = this.state;
+    const { validOrigins, newValidOrigins, removedValidOrigins } = this.state;
     return (
       <Card className={classes.root}>
         <Form
@@ -212,18 +167,7 @@ class NewProjectForm extends Component {
                             className={classes.origin}
                           >
                             <li>{name}</li>
-                            <Button
-                              size="small"
-                              color="primary"
-                              className={classes.tooltipElement}
-                              onClick={() => this.handleCopyClick(apiKey)}
-                              onMouseEnter={e =>
-                                this.handleMouseEnter(e, apiKey)
-                              }
-                              onMouseLeave={this.handleMouseLeave}
-                            >
-                              Copy API Key
-                            </Button>
+                            <CopyBtn text="Copy API Key" copyInput={apiKey} />
                             <Button
                               size="small"
                               className={classes.deleteBtn}
@@ -285,9 +229,6 @@ class NewProjectForm extends Component {
             </form>
           )}
         />
-        {this.state.showTooltip && (
-          <Tooltip position={tooltipPosition} message={currentApiKey} />
-        )}
       </Card>
     );
   }
