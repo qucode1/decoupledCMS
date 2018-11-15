@@ -6,6 +6,8 @@ import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { withStyles } from "@material-ui/core/styles";
 
+import Tooltip from "./Tooltip";
+
 const styles = theme => ({
   root: { padding: "8px" },
   form: {
@@ -47,7 +49,12 @@ class NewProjectForm extends Component {
   state = {
     validOrigins: [],
     newValidOrigins: [],
-    removedValidOrigins: []
+    removedValidOrigins: [],
+    showTooltip: false,
+    tooltipPosition: [0, 0],
+    currentApiKey: "",
+    tooltipTimeout: null,
+    timeoutTimer: 300
   };
   addOrigin = origin => {
     this.setState(({ newValidOrigins }) => ({
@@ -60,7 +67,6 @@ class NewProjectForm extends Component {
         newValidOrigins: newValidOrigins.filter(o => o !== obsolete)
       }));
     } else {
-      // console.log("obsolete", obsolete);
       this.setState(({ validOrigins, removedValidOrigins }) => ({
         validOrigins: validOrigins.filter(o => o.name !== obsolete.name),
         removedValidOrigins: [...removedValidOrigins, obsolete._id]
@@ -96,6 +102,41 @@ class NewProjectForm extends Component {
     });
     reset();
   };
+  handleCopyClick = apiKey => {
+    navigator.permissions.query({ name: "clipboard-write" }).then(result => {
+      if (result.state == "granted" || result.state == "prompt") {
+        /* write to the clipboard now */
+        navigator.clipboard.writeText(apiKey).then(
+          function() {
+            /* clipboard successfully set */
+          },
+          function() {
+            /* clipboard write failed */
+            console.log("copy failure");
+          }
+        );
+      }
+    });
+  };
+
+  handleMouseEnter = (e, currentApiKey) => {
+    this.setState({
+      showTooltip: true,
+      tooltipPosition: [e.clientX, e.clientY],
+      currentApiKey
+    });
+    clearTimeout(this.state.tooltipTimeout);
+  };
+
+  handleMouseLeave = () => {
+    const tooltipTimeout = setTimeout(() => {
+      this.setState({ showTooltip: false, currentApiKey: "" });
+    }, this.state.timeoutTimer);
+    this.setState({
+      tooltipTimeout
+    });
+  };
+
   componentDidMount() {
     const {
       initialValues: { newProjectValidOrigins: validOrigins = [] } = {}
@@ -104,7 +145,13 @@ class NewProjectForm extends Component {
   }
   render() {
     const { updateProject, initialValues, classes } = this.props;
-    const { validOrigins, newValidOrigins } = this.state;
+    const {
+      validOrigins,
+      newValidOrigins,
+      removedValidOrigins,
+      currentApiKey,
+      tooltipPosition
+    } = this.state;
     return (
       <Card className={classes.root}>
         <Form
@@ -158,13 +205,25 @@ class NewProjectForm extends Component {
                   {validOrigins.length ? (
                     <ul className={classes.originList}>
                       {[...this.state.validOrigins].map((origin, index) => {
-                        const { name } = origin;
+                        const { name, apiKey } = origin;
                         return (
                           <div
                             key={`origin-${index}`}
                             className={classes.origin}
                           >
                             <li>{name}</li>
+                            <Button
+                              size="small"
+                              color="primary"
+                              className={classes.tooltipElement}
+                              onClick={() => this.handleCopyClick(apiKey)}
+                              onMouseEnter={e =>
+                                this.handleMouseEnter(e, apiKey)
+                              }
+                              onMouseLeave={this.handleMouseLeave}
+                            >
+                              Copy API Key
+                            </Button>
                             <Button
                               size="small"
                               className={classes.deleteBtn}
@@ -213,7 +272,12 @@ class NewProjectForm extends Component {
                   type="button"
                   color="secondary"
                   onClick={() => this.customReset(reset)}
-                  disabled={submitting || pristine}
+                  disabled={
+                    submitting ||
+                    (pristine &&
+                      !newValidOrigins.length &&
+                      !removedValidOrigins.length)
+                  }
                 >
                   Reset
                 </Button>
@@ -221,6 +285,9 @@ class NewProjectForm extends Component {
             </form>
           )}
         />
+        {this.state.showTooltip && (
+          <Tooltip position={tooltipPosition} message={currentApiKey} />
+        )}
       </Card>
     );
   }
