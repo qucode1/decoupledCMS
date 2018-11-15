@@ -52,9 +52,11 @@ class NewProjectForm extends Component {
     removedValidOrigins: []
   };
   addOrigin = origin => {
-    this.setState(({ newValidOrigins }) => ({
-      newValidOrigins: [...newValidOrigins, origin]
-    }));
+    if (origin && origin.length) {
+      this.setState(({ newValidOrigins }) => ({
+        newValidOrigins: [...newValidOrigins, origin]
+      }));
+    }
   };
   removeOrigin = obsolete => {
     if (typeof obsolete === "string") {
@@ -145,7 +147,12 @@ class NewProjectForm extends Component {
                   />
                   <Button
                     color="primary"
-                    size="small" // disabled={pristine || invalid || disabled}
+                    size="small"
+                    disabled={
+                      pristine ||
+                      !values.newProjectOrigin ||
+                      !values.newProjectOrigin.length
+                    }
                     onClick={() => {
                       this.addOrigin(values.newProjectOrigin);
                     }}
