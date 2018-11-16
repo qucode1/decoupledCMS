@@ -90,7 +90,7 @@ class NewProjectForm extends Component {
   };
   customReset = reset => {
     const {
-      initialValues: { newProjectValidOrigins: validOrigins = [] }
+      initialValues: { newProjectValidOrigins: validOrigins = [] } = {}
     } = this.props;
     this.setState({
       validOrigins,
