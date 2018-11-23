@@ -1,23 +1,26 @@
 /* eslint react/prefer-stateless-function: 0 */
 
-import React, { Fragment } from "react"
-import PropTypes from "prop-types"
-import Head from "next/head"
-import Button from "@material-ui/core/Button"
-import AddIcon from "@material-ui/icons/Add"
-import ClearIcon from "@material-ui/icons/Clear"
-import fetch from "isomorphic-unfetch"
-import Typography from "@material-ui/core/Typography"
-import { withStyles } from "@material-ui/core/styles"
-import { defaultRootStyling } from "../lib/SharedStyles"
-import { serverURL } from "../variables"
+import React, { Fragment } from "react";
+import PropTypes from "prop-types";
+import Head from "next/head";
+import Button from "@material-ui/core/Button";
+import AddIcon from "@material-ui/icons/Add";
+import ClearIcon from "@material-ui/icons/Clear";
+import fetch from "isomorphic-unfetch";
+import Typography from "@material-ui/core/Typography";
+import { withStyles } from "@material-ui/core/styles";
 
-import NewDocumentForm from "./NewDocumentForm"
-import CustomList from "./CustomList"
+import { defaultRootStyling } from "../../lib/SharedStyles";
+import { serverURL } from "../../variables";
+
+import NewDocumentForm from "../NewDocumentForm/NewDocumentForm";
+import CustomList from "../CustomList/CustomList";
 
 const styles = theme => ({
-  root: defaultRootStyling(theme)
-})
+  root: defaultRootStyling(theme),
+  headline: { margin: "8px 8px 8px 0" },
+  formHeader: { display: "flex", alignItems: "center" }
+});
 
 class Documents extends React.Component {
   state = {
@@ -27,16 +30,16 @@ class Documents extends React.Component {
     fields: [],
     options: {},
     showNewDocumentForm: false
-  }
+  };
   static propTypes = {
     user: PropTypes.shape({
       email: PropTypes.string.isRequired
     })
-  }
+  };
 
   static defaultProps = {
     user: null
-  }
+  };
 
   async componentDidMount() {
     const {
@@ -44,37 +47,37 @@ class Documents extends React.Component {
         query: { projectId, modelId }
       },
       user: { _id: userId }
-    } = this.props
+    } = this.props;
     const {
       data: { model },
       error
     } = await fetch(
       `${serverURL}/${userId}/projects/${projectId}/models/${modelId}?populate=true`
-    ).then(res => res.json())
+    ).then(res => res.json());
 
-    const { _id: id, fields, options, ...rest } = model
+    const { _id: id, fields, options, ...rest } = model;
 
     const {
       context: { setPageTitle }
-    } = this.props
-    setPageTitle(model.name)
+    } = this.props;
+    setPageTitle(model.name);
 
     this.setState({
       ...rest,
       id,
       fields: JSON.parse(fields),
       options: JSON.parse(options)
-    })
+    });
   }
 
   handleInputChange = e =>
     this.setState({
       [e.target.name]: e.target.value
-    })
+    });
 
   toggleNewDocumentForm = () => {
-    this.setState({ showNewDocumentForm: !this.state.showNewDocumentForm })
-  }
+    this.setState({ showNewDocumentForm: !this.state.showNewDocumentForm });
+  };
 
   addDocument = async values => {
     const {
@@ -82,8 +85,8 @@ class Documents extends React.Component {
       router: {
         query: { projectId, modelId }
       }
-    } = this.props
-    const { documents } = this.state
+    } = this.props;
+    const { documents } = this.state;
     const { data, error } = await fetch(
       `${serverURL}/${userId}/projects/${projectId}/models/${modelId}/documents`,
       {
@@ -96,34 +99,34 @@ class Documents extends React.Component {
           ...values
         })
       }
-    ).then(res => res.json())
+    ).then(res => res.json());
     !error &&
       this.setState(prevState => ({
         documents: [...prevState.documents, data.document]
-      }))
-  }
+      }));
+  };
 
   deleteDocument = async targetId => {
     const {
       user: { _id: userId }
-    } = this.props
-    const { id: modelId, project: projectId } = this.state
+    } = this.props;
+    const { id: modelId, project: projectId } = this.state;
     const { data, error } = await fetch(
       `${serverURL}/${userId}/projects/${projectId}/models/${modelId}/documents/${targetId}`,
       {
         method: "DELETE"
       }
-    ).then(res => res.json())
+    ).then(res => res.json());
     !error &&
       this.setState(prevState => ({
         documents: prevState.documents.filter(
           document => document._id !== targetId
         )
-      }))
-  }
+      }));
+  };
 
   render() {
-    const { user, error, classes } = this.props
+    const { user, error, classes } = this.props;
     const {
       name,
       entry,
@@ -132,12 +135,12 @@ class Documents extends React.Component {
       showNewDocumentForm,
       project,
       id: modelId
-    } = this.state
-    if (error) return <h2>Error</h2>
+    } = this.state;
+    if (error) return <h2>Error</h2>;
     return (
       <div className={classes.root}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="headline" style={{ margin: "8px 8px 8px 0" }}>
+        <div className={classes.formHeader}>
+          <Typography variant="headline" className={classes.headline}>
             Documents ({documents.length})
           </Typography>
           <Button
@@ -174,8 +177,8 @@ class Documents extends React.Component {
           />
         )}
       </div>
-    )
+    );
   }
 }
 
-export default withStyles(styles)(Documents)
+export default withStyles(styles)(Documents);

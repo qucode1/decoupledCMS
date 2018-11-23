@@ -1,10 +1,10 @@
-import React, { Component } from "react"
-import { withRouter } from "next/router"
-import NavLink from "next/link"
-import ListItem from "@material-ui/core/ListItem"
-import ListItemIcon from "@material-ui/core/ListItemIcon"
-import ListItemText from "@material-ui/core/ListItemText"
-import { withStyles } from "@material-ui/core/styles"
+import React, { Component } from "react";
+import { withRouter } from "next/router";
+import NavLink from "next/link";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import { withStyles } from "@material-ui/core/styles";
 
 const styles = theme => ({
   navLink: {
@@ -14,7 +14,7 @@ const styles = theme => ({
   activeNavLink: {
     backgroundColor: theme.palette.action.hover
   }
-})
+});
 
 class NavigationMenuItem extends Component {
   styles = theme => ({
@@ -27,7 +27,7 @@ class NavigationMenuItem extends Component {
     activeNavLink: {
       backgroundColor: theme.palette.action.hover
     }
-  })
+  });
   div = props => {
     return (
       <NavLink href={props.to}>
@@ -57,27 +57,12 @@ class NavigationMenuItem extends Component {
           </div>
         </ListItem>
       </NavLink>
-    )
-  }
-  StyledDiv = withStyles(this.styles)(this.div)
+    );
+  };
+  StyledDiv = withStyles(this.styles)(this.div);
   render() {
-    return <this.StyledDiv {...this.props} />
-    // return (
-    //   <NavLink href={props.to}>
-    //     <ListItem
-    //       button
-    //       className={
-    //         props.router.pathname === props.to ? props.classes.activeNavLink : ""
-    //       }
-    //     >
-    //       <div className={`${props.classes.navLink}`}>
-    //         <ListItemIcon>{props.children}</ListItemIcon>
-    //         <ListItemText primary={props.text} />
-    //       </div>
-    //     </ListItem>
-    //   </NavLink>
-    // )
+    return <this.StyledDiv {...this.props} />;
   }
 }
 
-export default withStyles(styles)(withRouter(NavigationMenuItem))
+export default withStyles(styles)(withRouter(NavigationMenuItem));

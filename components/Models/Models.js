@@ -1,36 +1,38 @@
-import React, { Component, Fragment } from "react"
-import PropTypes from "prop-types"
-import Head from "next/head"
-import Button from "@material-ui/core/Button"
-import Typography from "@material-ui/core/Typography"
-import AddIcon from "@material-ui/icons/Add"
-import ClearIcon from "@material-ui/icons/Clear"
-import { withStyles } from "@material-ui/core/styles"
-import { defaultRootStyling } from "../lib/SharedStyles"
+import React, { Component, Fragment } from "react";
+import PropTypes from "prop-types";
+import Head from "next/head";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import AddIcon from "@material-ui/icons/Add";
+import ClearIcon from "@material-ui/icons/Clear";
+import { withStyles } from "@material-ui/core/styles";
 
-import NewModelForm from "./NewModelForm"
-import CustomList from "./CustomList"
+import { defaultRootStyling } from "../../lib/SharedStyles";
+import { serverURL } from "../../variables";
 
-import { serverURL } from "../variables"
+import NewModelForm from "../NewModelForm/NewModelForm";
+import CustomList from "../CustomList/CustomList";
 
 const styles = theme => ({
-  root: defaultRootStyling(theme)
-})
+  root: defaultRootStyling(theme),
+  formHeader: { display: "flex", alignItems: "center" },
+  headline: { margin: "8px 8px 8px 0" }
+});
 
 class Models extends Component {
   state = {
     models: [],
     showNewModelForm: false
-  }
+  };
   static propTypes = {
     user: PropTypes.shape({
       email: PropTypes.string.isRequired
     })
-  }
+  };
 
   static defaultProps = {
     user: null
-  }
+  };
 
   // static getInitialProps = async ({ req }) => {
   //   const { data: project, error } = await fetch(
@@ -49,34 +51,34 @@ class Models extends Component {
         query: { projectId }
       },
       user: { _id: userId }
-    } = this.props
+    } = this.props;
     const {
       data: { project },
       error
     } = await fetch(`${serverURL}/${userId}/projects/${projectId}`).then(res =>
       res.json()
-    )
+    );
 
     const {
       context: { setPageTitle }
-    } = this.props
-    setPageTitle(project.name)
+    } = this.props;
+    setPageTitle(project.name);
 
     this.setState({
       project,
       error,
       models: project.models
-    })
+    });
   }
 
   handleInputChange = e => {
     this.setState({
       [e.target.name]: e.target.value
-    })
-  }
+    });
+  };
   toggleNewModelForm = () => {
-    this.setState({ showNewModelForm: !this.state.showNewModelForm })
-  }
+    this.setState({ showNewModelForm: !this.state.showNewModelForm });
+  };
 
   addModel = async ({
     newModelName,
@@ -105,13 +107,13 @@ class Models extends Component {
           options: newModelOptions
         })
       }
-    ).then(res => res.json())
+    ).then(res => res.json());
 
     !error &&
       this.setState(prevState => ({
         models: [...prevState.models, newModel]
-      }))
-  }
+      }));
+  };
 
   deleteModel = async targetId => {
     const {
@@ -119,27 +121,27 @@ class Models extends Component {
         query: { projectId }
       },
       user: { _id: userId }
-    } = this.props
+    } = this.props;
     const { data, error } = await fetch(
       `${serverURL}/${userId}/projects/${projectId}/models/${targetId}`,
       {
         method: "DELETE"
       }
-    ).then(res => res.json())
+    ).then(res => res.json());
     !error &&
       this.setState(prevState => ({
         models: prevState.models.filter(model => model._id !== targetId)
-      }))
-  }
+      }));
+  };
 
   render() {
-    const { user, classes } = this.props
-    const { showNewModelForm, project = {}, error, models } = this.state
-    if (error) return <h2>Error</h2>
+    const { user, classes } = this.props;
+    const { showNewModelForm, project = {}, error, models } = this.state;
+    if (error) return <h2>Error</h2>;
     return (
       <div className={classes.root}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="headline" style={{ margin: "8px 8px 8px 0" }}>
+        <div className={classes.formHeader}>
+          <Typography variant="headline" className={classes.headline}>
             Models ({models.length})
           </Typography>
           <Button
@@ -173,8 +175,8 @@ class Models extends Component {
           />
         )}
       </div>
-    )
+    );
   }
 }
 
-export default withStyles(styles)(Models)
+export default withStyles(styles)(Models);

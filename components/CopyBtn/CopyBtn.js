@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
-
-import Tooltip from "./Tooltip";
 import Button from "@material-ui/core/Button";
+
+import Tooltip from "../Tooltip/Tooltip";
 
 class CopyBtn extends Component {
   state = {
@@ -14,7 +14,6 @@ class CopyBtn extends Component {
   handleCopyClick = () => {
     navigator.permissions.query({ name: "clipboard-write" }).then(result => {
       if (result.state == "granted" || result.state == "prompt") {
-        /* write to the clipboard now */
         navigator.clipboard.writeText(this.props.copyInput).then(
           function() {
             /* clipboard successfully set */

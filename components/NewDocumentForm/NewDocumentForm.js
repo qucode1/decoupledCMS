@@ -1,36 +1,40 @@
-import React, { Component } from "react"
-import { Form, Field } from "react-final-form"
-import Card from "@material-ui/core/Card"
-import TextField from "../components/formElements/TextField"
-import Checkbox from "../components/formElements/Checkbox"
-import Radio from "../components/formElements/Radio"
-import Button from "@material-ui/core/Button"
+import React, { Component } from "react";
+import { Form, Field } from "react-final-form";
+import Card from "@material-ui/core/Card";
+import Button from "@material-ui/core/Button";
+import { withStyles } from "@material-ui/core/styles";
+
+import styles from "./styles";
+
+import TextField from "../formElements/TextField";
+import Checkbox from "../formElements/Checkbox";
+import Radio from "../formElements/Radio";
 
 class NewDocumentForm extends Component {
-  state = {}
+  state = {};
 
   validate = values => {
-    const errors = {}
+    const errors = {};
     // if (!values.newDocumentName) {
     //   errors.newProjectName = "Required"
     // }
-    return errors
-  }
+    return errors;
+  };
 
   changeTextInputType = e => {
     this.setState({
       [e.target.name]: !!!this.state[e.target.name]
-    })
-  }
+    });
+  };
 
-  required = value => (value ? undefined : "Required")
+  required = value => (value ? undefined : "Required");
 
   composeValidators = (...validators) => value => {
     validators.reduce(
       (error, validator) => error || validator(value),
       undefined
-    )
-  }
+    );
+  };
 
   getType = fieldType => {
     const table = {
@@ -38,17 +42,22 @@ class NewDocumentForm extends Component {
       Date: "date",
       Number: "number",
       checkbox: "checkbox"
-    }
-    return table[fieldType]
-  }
+    };
+    return table[fieldType];
+  };
 
-  capitalize = str => `${str[0].toUpperCase()}${str.slice(1)}`
+  capitalize = str => `${str[0].toUpperCase()}${str.slice(1)}`;
 
   render() {
-    const { addDocument, updateDocument, fields, initialValues } = this.props
+    const {
+      addDocument,
+      updateDocument,
+      fields,
+      initialValues,
+      classes
+    } = this.props;
     return (
-
-      <Card style={{ padding: "8px" }}>
+      <Card className={classes.root}>
         <Form
           onSubmit={addDocument || updateDocument}
           validate={this.validate}
@@ -61,25 +70,24 @@ class NewDocumentForm extends Component {
             values,
             invalid
           }) => (
-            <form onSubmit={(val) => handleSubmit(val).then(reset)} style={{ margin: "16px 0" }}>
+            <form
+              onSubmit={val => handleSubmit(val).then(reset)}
+              className={classes.form}
+            >
               {fields
                 .filter(
                   ([name]) => !["owner", "project", "model"].includes(name)
                 )
                 .map(([fieldName, fieldType, fieldOptions], index) => (
-                  <div key={`field-${index}`} style={{ marginBottom: "16px" }}>
+                  <div key={`field-${index}`} className={classes.field}>
                     <div
-                      style={{
-                        display:
-                          fieldType === "String" ? "flex" : "inline-block",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        flexWrap: "wrap"
-                      }}
+                      className={`${classes.fieldHeader} ${
+                        fieldType === "String" ? classes.string : ""
+                      }`}
                     >
                       <label
                         htmlFor={fieldName}
-                        style={{ marginRight: "16px" }}
+                        className={classes.fieldName}
                       >{`${this.capitalize(fieldName)}`}</label>
                       {fieldType === "String" && (
                         <div>
@@ -102,13 +110,12 @@ class NewDocumentForm extends Component {
                           ? "true"
                           : "false"
                       }
-                      style={{
-                        width:
-                          fieldType === "String" &&
-                          this.state[`${fieldName}Multiline`]
-                            ? "100%"
-                            : "auto"
-                      }}
+                      className={
+                        fieldType === "String" &&
+                        this.state[`${fieldName}Multiline`]
+                          ? classes.fieldInputMultiline
+                          : classes.fieldInput
+                      }
                       name={`${fieldName}`}
                       type={
                         fieldType === "Boolean"
@@ -119,13 +126,13 @@ class NewDocumentForm extends Component {
                         fieldType === "Boolean"
                           ? null
                           : fieldOptions.required
-                            ? this.required
-                            : null
+                          ? this.required
+                          : null
                       }
                     />
                   </div>
                 ))}
-              <div className="buttons" style={{ marginTop: "16px" }}>
+              <div className="buttons" className={classes.formControls}>
                 <Button
                   type="submit"
                   color="primary"
@@ -147,8 +154,8 @@ class NewDocumentForm extends Component {
           )}
         />
       </Card>
-    )
+    );
   }
 }
 
-export default NewDocumentForm
+export default withStyles(styles)(NewDocumentForm);

@@ -1,10 +1,11 @@
-import React, { Component } from "react"
-import { withStyles } from "@material-ui/core/styles"
-import { defaultRootStyling } from "../lib/SharedStyles"
-import NewModelForm from "./NewModelForm"
+import React, { Component } from "react";
+import { withStyles } from "@material-ui/core/styles";
 
-import { serverURL } from "../variables"
-import { cleanName } from "../lib/helpers";
+import { defaultRootStyling } from "../../lib/SharedStyles";
+import { serverURL } from "../../variables";
+import { cleanName } from "../../lib/helpers";
+
+import NewModelForm from "../NewModelForm/NewModelForm";
 
 const styles = theme => ({
   root: {
@@ -13,10 +14,10 @@ const styles = theme => ({
       padding: `${theme.spacing.unit * 5}px`
     }
   }
-})
+});
 
 class Model extends Component {
-  state = {}
+  state = {};
   async componentDidMount() {
     const {
       router: {
@@ -24,32 +25,35 @@ class Model extends Component {
       },
       user: { _id: userId },
       context: { setPageTitle }
-    } = this.props
+    } = this.props;
 
     const {
       data: { model },
       error
     } = await fetch(
       `${serverURL}/${userId}/projects/${projectId}/models/${modelId}`
-    ).then(res => res.json())
+    ).then(res => res.json());
 
-    setPageTitle(`${model.name}`)
+    setPageTitle(`${model.name}`);
 
     if (!error) {
-      const { fields, options } = model
-      const testObj = {
-        
-      }
+      const { fields, options } = model;
+      const testObj = {};
       this.setState({
         ...model,
         fields: JSON.parse(fields),
         options: JSON.parse(options),
         name: cleanName(model.name)
-      })
+      });
     }
   }
 
-  updateModel = async ({ newModelName, newModelFields, newModelEntry, newModelOptions }) => {
+  updateModel = async ({
+    newModelName,
+    newModelFields,
+    newModelEntry,
+    newModelOptions
+  }) => {
     try {
       const {
         user: { _id: userId },
@@ -57,7 +61,7 @@ class Model extends Component {
           query: { projectId, modelId }
         },
         context: { setPageTitle }
-      } = this.props
+      } = this.props;
 
       const {
         data: { model },
@@ -77,37 +81,47 @@ class Model extends Component {
             options: newModelOptions
           })
         }
-      ).then(res => res.json())
+      ).then(res => res.json());
 
       if (!error) {
-        const { fields, options } = model
+        const { fields, options } = model;
         this.setState({
           ...model,
           fields: JSON.parse(fields),
           options: JSON.parse(options),
           name: cleanName(model.name)
-        })
-        setPageTitle(model.name)
+        });
+        setPageTitle(model.name);
       }
-    } catch(err) {
-      console.error(`updateModel error: ${err}`)
+    } catch (err) {
+      console.error(`updateModel error: ${err}`);
     }
-  }
+  };
 
   render() {
-    const { name: newModelName, fields: newModelFields, entry: newModelEntry, options } = this.state
-    const { classes } = this.props
+    const {
+      name: newModelName,
+      fields: newModelFields,
+      entry: newModelEntry,
+      options
+    } = this.state;
+    const { classes } = this.props;
     return (
       <div className={classes.root}>
         {newModelName && (
           <NewModelForm
-            initialValues={{ newModelName, newModelFields, newModelEntry, ...options }}
+            initialValues={{
+              newModelName,
+              newModelFields,
+              newModelEntry,
+              ...options
+            }}
             updateModel={this.updateModel}
           />
         )}
       </div>
-    )
+    );
   }
 }
 
-export default withStyles(styles)(Model)
+export default withStyles(styles)(Model);

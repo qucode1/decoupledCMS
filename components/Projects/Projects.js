@@ -5,11 +5,12 @@ import AddIcon from "@material-ui/icons/Add";
 import ClearIcon from "@material-ui/icons/Clear";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
-import { defaultRootStyling } from "../lib/SharedStyles";
-import { serverURL } from "../variables";
 
-import NewProjectForm from "../components/NewProjectForm";
-import CustomList from "../components/CustomList";
+import { defaultRootStyling } from "../../lib/SharedStyles";
+import { serverURL } from "../../variables";
+
+import NewProjectForm from "../NewProjectForm/NewProjectForm";
+import CustomList from "../CustomList/CustomList";
 
 const styles = theme => ({
   root: defaultRootStyling(theme),

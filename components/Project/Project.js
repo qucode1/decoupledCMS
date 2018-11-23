@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import { defaultRootStyling } from "../lib/SharedStyles";
-import { cleanName } from "../lib/helpers";
 
-import NewProjectForm from "./NewProjectForm";
+import { defaultRootStyling } from "../../lib/SharedStyles";
+import { cleanName } from "../../lib/helpers";
+import { serverURL } from "../../variables";
 
-import { serverURL } from "../variables";
+import NewProjectForm from "../NewProjectForm/NewProjectForm";
 
 const styles = theme => ({
   root: {

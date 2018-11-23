@@ -1,49 +1,15 @@
 import React, { Component } from "react";
 import { Form, Field } from "react-final-form";
 import Card from "@material-ui/core/Card";
-import TextField from "../components/formElements/TextField";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { withStyles } from "@material-ui/core/styles";
 
-import CopyBtn from "./CopyBtn";
+import styles from "./styles";
 
-const styles = theme => ({
-  root: { padding: "8px" },
-  form: {
-    margin: "16px 0",
-    display: "flex",
-    flexDirection: "column"
-  },
-  originControls: {
-    display: "flex"
-  },
-  originList: {
-    listStyleType: "none"
-  },
-  origin: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-  deleteBtn: {
-    color: theme.palette.error.main,
-    alignSelf: "center",
-    "&:hover": {
-      backgroundColor: "#ffe7e7"
-    }
-  },
-  formElement: {
-    margin: "20px 0",
-    "&:first-of-type": {
-      margin: "0"
-    },
-    display: "flex",
-    alignItems: "center"
-  },
-  formControls: { marginTop: "16px" }
-});
+import TextField from "../formElements/TextField";
+
+import CopyBtn from "../CopyBtn/CopyBtn";
 
 class NewProjectForm extends Component {
   state = {

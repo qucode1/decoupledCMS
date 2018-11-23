@@ -60,10 +60,9 @@ projectsRouter.get("/:projectId", isOwner, async (req, res) => {
 
 projectsRouter.put("/:projectId", isOwner, async (req, res) => {
   try {
-    // console.log(`/projects/ put`, req.body, "\n\n");
     const project = await Project.findOne({ _id: req.params.projectId });
-    // console.log("project base", req.body, "\n\n");
     const { removedValidOrigins } = req.body;
+
     if (project.owner.toString() === req.params.user) {
       Object.keys(req.body).forEach(key => {
         if (
@@ -78,6 +77,7 @@ projectsRouter.put("/:projectId", isOwner, async (req, res) => {
           project[key] = req.body[key];
         }
       });
+
       const newOrigins = req.body.newValidOrigins
         ? req.body.newValidOrigins.map(
             name =>
@@ -89,13 +89,13 @@ projectsRouter.put("/:projectId", isOwner, async (req, res) => {
               })
           )
         : [];
+
       const filteredOrigins = project.validOrigins.filter(o => {
         return !removedValidOrigins.includes(String(o));
       });
-      // console.log("filteredOrigins", filteredOrigins);
-      // console.log("newOrigins", newOrigins, "\n\n");
+
       project.validOrigins = [...filteredOrigins, ...newOrigins];
-      // console.log("project new", project, "\n\n");
+
       const [savedProject, ...rest] = await Promise.all([
         project.save(),
         ...newOrigins.map(async o => await o.save()),
@@ -103,12 +103,14 @@ projectsRouter.put("/:projectId", isOwner, async (req, res) => {
           async o => await Origin.deleteOne({ _id: o })
         )
       ]);
+
       const populatedProject = await Project.findById({
         _id: savedProject._id
       }).populate({
         path: "validOrigins",
         model: Origin
       });
+
       res.json({
         data: {
           project: populatedProject
@@ -124,7 +126,6 @@ projectsRouter.put("/:projectId", isOwner, async (req, res) => {
 
 projectsRouter.post("/", isOwner, async (req, res) => {
   try {
-    // console.log(`/projects/add req`, req.body);
     const projectId = new mongoose.Types.ObjectId();
     const origins = req.body.newValidOrigins
       ? req.body.newValidOrigins.map(
@@ -155,7 +156,9 @@ projectsRouter.post("/", isOwner, async (req, res) => {
         validOrigins: origins.map(origin => origin.id)
       }).save()
     ]);
+
     const newProject = await Project.findOne({ _id: projectId });
+
     res.json({
       data: {
         project: newProject
@@ -172,6 +175,7 @@ projectsRouter.delete("/:projectId", isOwner, async (req, res) => {
       project: req.params.projectId
     });
     const project = await Project.findById(req.params.projectId);
+
     for (const userCreatedModel of userCreatedModels) {
       const { name, fields, options } = userCreatedModel;
       const Model = createModel(name, fields, options);
@@ -197,6 +201,7 @@ projectsRouter.delete("/:projectId", isOwner, async (req, res) => {
         $pull: { projects: req.params.projectId }
       }
     );
+
     res.status(200).json({
       data: {
         message: "Project, related models and documents have been deleted."

@@ -3,9 +3,7 @@ const documentsRouter = express.Router({ mergeParams: true });
 const mongoose = require("mongoose");
 
 const { createModel } = require("../utils/dynamicSchema");
-const { Project } = require("../models/Project");
 const { UserCreatedModel } = require("../models/UserCreatedModel");
-const User = require("../models/User");
 
 const { UnexpectedRoutingError } = require("../utils/errorHandling");
 

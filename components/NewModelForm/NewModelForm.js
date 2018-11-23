@@ -1,7 +1,5 @@
 import React, { Component, Fragment } from "react";
 import { Form, Field } from "react-final-form";
-import TextField from "../components/formElements/TextField";
-import Checkbox from "../components/formElements/Checkbox";
 import PropTypes from "prop-types";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -9,34 +7,16 @@ import AddIcon from "@material-ui/icons/Add";
 import ClearIcon from "@material-ui/icons/Clear";
 import Card from "@material-ui/core/Card";
 import MenuItem from "@material-ui/core/MenuItem";
-import Wrapper from "./formElements/Wrapper";
-import NewModelFieldForm from "./NewModelFieldForm";
-import Select from "./formElements/Select";
 import { withStyles } from "@material-ui/core/styles";
 
-const styles = theme => ({
-  root: {
-    padding: "8px"
-  },
-  formElement: {
-    margin: "20px 0",
-    "&:first-of-type": {
-      margin: "0"
-    }
-  },
-  subheading: { margin: "8px 8px 8px 0" },
-  newModelFieldsControls: {
-    display: "flex",
-    alignItems: "center"
-  },
-  newModelFieldContainer: { margin: "16px 0" },
-  newModelField: {
-    margin: "5px 0",
-    padding: "5px 0",
-    borderBottom: "1px dotted rgba(0,0,0,0.3)"
-  },
-  formControls: { display: "block" }
-});
+import styles from "./styles";
+
+import Wrapper from "../formElements/Wrapper";
+import Select from "../formElements/Select";
+import TextField from "../formElements/TextField";
+import Checkbox from "../formElements/Checkbox";
+
+import NewModelFieldForm from "../NewModelFieldForm/NewModelFieldForm";
 
 class NewModelForm extends Component {
   state = {

@@ -1,24 +1,30 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Link from 'next/link';
-import Menu from '@material-ui/core/Menu';
-import Avatar from '@material-ui/core/Avatar';
+import React from "react";
+import PropTypes from "prop-types";
+import Link from "next/link";
+import Menu from "@material-ui/core/Menu";
+import Avatar from "@material-ui/core/Avatar";
+import { withStyles } from "@material-ui/core/styles";
+
+const styles = theme => ({
+  avatar: { margin: "0px 20px 0px auto", cursor: "pointer" },
+  menuOption: { padding: "0px 20px" }
+});
 
 class MenuDrop extends React.Component {
   static propTypes = {
     src: PropTypes.string.isRequired,
     alt: PropTypes.string.isRequired,
-    options: PropTypes.arrayOf(String).isRequired,
+    options: PropTypes.arrayOf(String).isRequired
   };
 
   state = {
     open: false,
-    anchorEl: undefined,
+    anchorEl: undefined
   };
 
   button = undefined;
 
-  handleClick = (event) => {
+  handleClick = event => {
     this.setState({ open: true, anchorEl: event.currentTarget });
   };
 
@@ -27,7 +33,7 @@ class MenuDrop extends React.Component {
   };
 
   render() {
-    const { options, src, alt } = this.props;
+    const { options, src, alt, classes } = this.props;
 
     return (
       <div>
@@ -39,7 +45,7 @@ class MenuDrop extends React.Component {
           onKeyPress={this.handleClick}
           src={src}
           alt={alt}
-          style={{ margin: '0px 20px 0px auto', cursor: 'pointer' }}
+          className={classes.avatar}
         />
         <Menu
           id="simple-menu"
@@ -51,7 +57,7 @@ class MenuDrop extends React.Component {
           {options.map(option => (
             <div id="wrappingLink" key={option.text}>
               <Link prefetch href={option.href} as={option.as || option.href}>
-                <a style={{ padding: '0px 20px' }}>{option.text}</a>
+                <a className={classes.menuOption}>{option.text}</a>
               </Link>
               <p />
             </div>
@@ -62,4 +68,4 @@ class MenuDrop extends React.Component {
   }
 }
 
-export default MenuDrop;
+export default withStyles(styles)(MenuDrop);

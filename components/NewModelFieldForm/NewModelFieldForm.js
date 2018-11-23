@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from "react";
 import { Form, Field } from "react-final-form";
-import Select from "./formElements/Select";
-import TextField from "./formElements/TextField";
-import Checkbox from "./formElements/Checkbox";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { withStyles } from "@material-ui/core/styles";
+
+import Select from "../formElements/Select";
+import TextField from "../formElements/TextField";
+import Checkbox from "../formElements/Checkbox";
 
 const styles = theme => ({
   root: {
@@ -40,16 +41,6 @@ class NewModelFieldForm extends Component {
     } = this.props;
     return (
       <Form
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: disabled ? "8px" : "0",
-          borderBottom: disabled ? "1px solid rgba(0,0,0,0.4)" : "none",
-          backgroundColor: disabled ? "aliceblue" : "inherit"
-        }}
         onSubmit={({ fieldName, fieldType, required, unique, ...rest }) => {
           addField([fieldName, fieldType, { required, unique }]);
         }}

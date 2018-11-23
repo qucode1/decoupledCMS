@@ -41,7 +41,7 @@ try {
     // confuring MongoDB session store
     const MongoStore = mongoSessionStore(session);
     const sess = {
-      name: "builderbook.sid",
+      name: "decoupledCMS",
       secret: sessionSecret,
       store: new MongoStore({
         mongooseConnection: mongoose.connection,
@@ -52,16 +52,6 @@ try {
       cookie: {
         httpOnly: true,
         maxAge: 14 * 24 * 60 * 60 * 1000
-      }
-    };
-
-    const sessionChecker = (req, res, next) => {
-      if (req.session.passport && req.session.passport.user) {
-        next();
-      } else {
-        return res.json({
-          error: "Not authenticated!"
-        });
       }
     };
 
