@@ -11,6 +11,7 @@
 - add proptypes and defaultProps
 - add confirmation modal before delting items
 - fix: newProjectForm name field has error by default
+- add favicon
 
 ### Bonus Features
 
