@@ -3,28 +3,47 @@ import Button from "@material-ui/core/Button";
 
 import Tooltip from "../Tooltip/Tooltip";
 
-class CopyBtn extends Component {
+interface Props {
+  copyInput?: string;
+  text: string;
+}
+
+interface State {
+  tooltipTimeout: any;
+  timeoutTimer: number;
+  showTooltip: boolean;
+  tooltipPosition: number[];
+}
+
+interface INavigator extends Navigator {
+  permissions: any;
+  clipboard: any;
+}
+
+class CopyBtn extends Component<Props, State> {
   state = {
     tooltipTimeout: null,
     timeoutTimer: 300,
     showTooltip: false,
     tooltipPosition: [0, 0]
   };
-
+  myNavigator = navigator as INavigator;
   handleCopyClick = () => {
-    navigator.permissions.query({ name: "clipboard-write" }).then(result => {
-      if (result.state == "granted" || result.state == "prompt") {
-        navigator.clipboard.writeText(this.props.copyInput).then(
-          function() {
-            /* clipboard successfully set */
-          },
-          function() {
-            /* clipboard write failed */
-            console.log("copy failure");
-          }
-        );
-      }
-    });
+    this.myNavigator.permissions
+      .query({ name: "clipboard-write" })
+      .then(result => {
+        if (result.state == "granted" || result.state == "prompt") {
+          this.myNavigator.clipboard.writeText(this.props.copyInput).then(
+            function() {
+              /* clipboard successfully set */
+            },
+            function() {
+              /* clipboard write failed */
+              console.log("copy failure");
+            }
+          );
+        }
+      });
   };
 
   handleMouseEnter = e => {

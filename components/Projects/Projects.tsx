@@ -10,7 +10,6 @@ import {
   createStyles,
   Theme
 } from "@material-ui/core/styles";
-import { withContext } from "../../lib/AppContext";
 
 import { defaultRootStyling } from "../../lib/SharedStyles";
 import { serverURL } from "../../variables";
@@ -23,19 +22,31 @@ const styles = (theme: Theme) =>
     root: defaultRootStyling(theme)
   });
 
+interface User {
+  _id: string;
+  avatarUrl: string;
+  displayName: string;
+  email: string;
+  isAdmin: boolean;
+  isGithubConnected: boolean;
+}
+
 interface Props extends WithStyles<typeof styles> {
-  user: {
-    _id: string;
-    avatarUrl: string;
-    displayName: string;
-    email: string;
-    isAdmin: boolean;
-    isGithubConnected: boolean;
-  };
+  user: User;
+  classes: any;
+}
+
+interface Project {
+  __v: number;
+  _id: string;
+  models: Array<any>;
+  name: string;
+  owner: string;
+  validOrigins: Array<any>;
 }
 
 interface State {
-  projects: Array<any>;
+  projects: Array<Project>;
   newProjectName: string;
   showNewProjectForm: boolean;
 }
@@ -45,11 +56,6 @@ class Projects extends Component<Props, State> {
     projects: [],
     newProjectName: "",
     showNewProjectForm: false
-  };
-  static propTypes = {
-    user: PropTypes.shape({
-      email: PropTypes.string.isRequired
-    })
   };
   static defaultProps = {
     user: null

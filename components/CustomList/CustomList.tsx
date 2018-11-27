@@ -12,14 +12,45 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import FolderIcon from "@material-ui/icons/Folder";
 import DescriptionIcon from "@material-ui/icons/Description";
 import WorkIcon from "@material-ui/icons/Work";
-import { withStyles } from "@material-ui/core/styles";
+import {
+  withStyles,
+  WithStyles,
+  Theme,
+  createStyles
+} from "@material-ui/core/styles";
 
 import { cleanName } from "../../lib/helpers.js";
 
-const styles = theme => ({});
+const styles = (theme: Theme) => createStyles({});
 
-class CustomList extends Component {
-  state = {};
+interface Project {
+  __v: number;
+  _id: string;
+  models: Array<any>;
+  name: string;
+  owner: string;
+  validOrigins: Array<any>;
+}
+
+interface Props extends WithStyles<typeof styles> {
+  baseURL: string;
+  deleteItem: any;
+  edit: boolean;
+  itemName: string;
+  items: Array<Project>;
+  params?: any;
+  icon?: string;
+  entry?: string;
+}
+
+interface State {
+  params: string;
+}
+
+class CustomList extends Component<Props, State> {
+  state = {
+    params: ""
+  };
   icons = {
     project: <WorkIcon />,
     model: <FolderIcon />,

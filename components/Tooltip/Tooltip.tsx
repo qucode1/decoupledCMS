@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 
-class Tooltip extends Component {
+interface Props {
+  message: string;
+  position: number[];
+}
+
+class Tooltip extends Component<Props, {}> {
   render() {
     const {
       message = "",
