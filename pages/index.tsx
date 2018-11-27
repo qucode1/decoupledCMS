@@ -3,7 +3,7 @@
 import React, { Fragment } from "react";
 import Head from "next/head";
 
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles, WithStyles } from "@material-ui/core/styles";
 
 import withAuth from "../lib/withAuth";
 import withLayout from "../lib/withLayout";
@@ -13,7 +13,14 @@ import Projects from "../components/Projects/Projects";
 
 const styles = theme => ({});
 
-class Index extends React.Component {
+interface Props extends WithStyles<typeof styles> {
+  context: {
+    setPageTitle: (title: string) => void
+  },
+  user: object
+}
+
+class Index extends React.Component<Props, {}> {
   componentDidMount() {
     const {
       context: { setPageTitle }

@@ -4,7 +4,12 @@ import Button from "@material-ui/core/Button";
 import AddIcon from "@material-ui/icons/Add";
 import ClearIcon from "@material-ui/icons/Clear";
 import Typography from "@material-ui/core/Typography";
-import { withStyles } from "@material-ui/core/styles";
+import {
+  withStyles,
+  WithStyles,
+  createStyles,
+  Theme
+} from "@material-ui/core/styles";
 
 import { defaultRootStyling } from "../../lib/SharedStyles";
 import { serverURL } from "../../variables";
@@ -12,17 +17,39 @@ import { serverURL } from "../../variables";
 import NewProjectForm from "../NewProjectForm/NewProjectForm";
 import CustomList from "../CustomList/CustomList";
 
-const styles = theme => ({
-  root: defaultRootStyling(theme),
-  deleteBtn: {
-    color: theme.palette.error.main,
-    "&:hover": {
-      backgroundColor: "#ffe7e7"
+const styles = (theme: Theme) =>
+  createStyles({
+    root: defaultRootStyling(theme),
+    deleteBtn: {
+      color: theme.palette.error.main,
+      "&:hover": {
+        backgroundColor: "#ffe7e7"
+      }
     }
-  }
-});
+  });
 
-class Projects extends Component {
+interface Props extends WithStyles<typeof styles> {
+  user: {
+    _id: string;
+    avatarUrl: string;
+    displayName: string;
+    email: string;
+    isAdmin: boolean;
+    isGithubConnected: boolean;
+  };
+  classes: {
+    root: string;
+    deleteBtn: string;
+  };
+}
+
+interface State {
+  projects: Array<any>;
+  newProjectName: string;
+  showNewProjectForm: boolean;
+}
+
+class Projects extends Component<Props, State> {
   state = {
     projects: [],
     newProjectName: "",
@@ -44,10 +71,6 @@ class Projects extends Component {
     );
     this.setState({ projects });
   }
-  handleInputChange = e =>
-    this.setState({
-      [e.target.name]: e.target.value
-    });
   toggleNewProjectForm = () =>
     this.setState({ showNewProjectForm: !this.state.showNewProjectForm });
   addProject = async values => {
@@ -128,5 +151,7 @@ class Projects extends Component {
     );
   }
 }
+
+// const StyledProjects = withStyles(styles)(Projects)
 
 export default withStyles(styles)(Projects);
