@@ -24,7 +24,7 @@ const NavigationMenu = props => {
   return (
     <List component="nav">
       <ListItem className={classes.toolbar}>
-        <Typography variant="title" classes={{ root: classes.title }}>
+        <Typography variant="h6" classes={{ root: classes.title }}>
           <ListItemText primary="DecoupledCMS" disableTypography />
         </Typography>
       </ListItem>

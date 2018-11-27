@@ -42,7 +42,7 @@ function Header({
               <BackIcon />
             </IconButton>
           )}
-          <Typography color="inherit" variant="title">
+          <Typography color="inherit" variant="h6">
             {pageTitle || "Decoupled CMS"}
           </Typography>
         </div>

@@ -10,6 +10,7 @@ import {
   createStyles,
   Theme
 } from "@material-ui/core/styles";
+import { withContext } from "../../lib/AppContext";
 
 import { defaultRootStyling } from "../../lib/SharedStyles";
 import { serverURL } from "../../variables";
@@ -19,13 +20,7 @@ import CustomList from "../CustomList/CustomList";
 
 const styles = (theme: Theme) =>
   createStyles({
-    root: defaultRootStyling(theme),
-    deleteBtn: {
-      color: theme.palette.error.main,
-      "&:hover": {
-        backgroundColor: "#ffe7e7"
-      }
-    }
+    root: defaultRootStyling(theme)
   });
 
 interface Props extends WithStyles<typeof styles> {
@@ -36,10 +31,6 @@ interface Props extends WithStyles<typeof styles> {
     email: string;
     isAdmin: boolean;
     isGithubConnected: boolean;
-  };
-  classes: {
-    root: string;
-    deleteBtn: string;
   };
 }
 
@@ -116,7 +107,7 @@ class Projects extends Component<Props, State> {
     return (
       <div className={classes.root}>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="headline" style={{ margin: "8px" }}>
+          <Typography variant="h5" style={{ margin: "8px" }}>
             My Projects ({projects.length})
           </Typography>
           <Button
@@ -152,6 +143,10 @@ class Projects extends Component<Props, State> {
   }
 }
 
-// const StyledProjects = withStyles(styles)(Projects)
+// const Test: React.FunctionComponent = (props: any) => (
+//   <div>
+//     <Projects {...props} />
+//   </div>
+// );
 
 export default withStyles(styles)(Projects);
