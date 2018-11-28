@@ -37,7 +37,7 @@ interface Props extends WithStyles<typeof styles> {
   deleteItem: any;
   edit: boolean;
   itemName: string;
-  items: Array<Project>;
+  items: Project[];
   params?: any;
   icon?: string;
   entry?: string;
@@ -47,11 +47,17 @@ interface State {
   params: string;
 }
 
+interface Icons {
+  project: JSX.Element;
+  model: JSX.Element;
+  document: JSX.Element;
+}
+
 class CustomList extends Component<Props, State> {
   state = {
     params: ""
   };
-  icons = {
+  icons: Icons = {
     project: <WorkIcon />,
     model: <FolderIcon />,
     document: <DescriptionIcon />
@@ -92,9 +98,13 @@ class CustomList extends Component<Props, State> {
           >
             <ListItem button>
               <ListItemAvatar>
-                <Avatar>{this.icons[icon]}</Avatar>
+                <Avatar>{this.icons[icon as keyof Icons]}</Avatar>
               </ListItemAvatar>
-              <ListItemText primary={cleanName(item[entry] || item.name)} />
+
+              <ListItemText
+                primary={cleanName(item[entry as keyof Project] || item.name)}
+              />
+
               <ListItemSecondaryAction>
                 {edit && (
                   <Link

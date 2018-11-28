@@ -1,6 +1,10 @@
-import React, { Fragment } from "react";
-import { withRouter } from "next/router";
-import { withStyles } from "@material-ui/core/styles";
+import React from "react";
+import {
+  withStyles,
+  WithStyles,
+  Theme,
+  createStyles
+} from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -11,15 +15,18 @@ import Typography from "@material-ui/core/Typography";
 
 import NavigationMenuItem from "../NavigationMenuItem/NavigationMenuItem";
 
-const styles = theme => ({
-  toolbar: theme.mixins.toolbar,
-  title: {
-    width: "100%",
-    textAlign: "center"
-  }
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    toolbar: theme.mixins.toolbar,
+    title: {
+      width: "100%",
+      textAlign: "center"
+    }
+  });
 
-const NavigationMenu = props => {
+interface Props extends WithStyles<typeof styles> {}
+
+const NavigationMenu = (props: Props) => {
   const { classes } = props;
   return (
     <List component="nav">
@@ -39,4 +46,4 @@ const NavigationMenu = props => {
   );
 };
 
-export default withStyles(styles)(withRouter(NavigationMenu));
+export default withStyles(styles)(NavigationMenu);

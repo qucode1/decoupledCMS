@@ -3,20 +3,37 @@ import PropTypes from "prop-types";
 import Link from "next/link";
 import Menu from "@material-ui/core/Menu";
 import Avatar from "@material-ui/core/Avatar";
-import { withStyles } from "@material-ui/core/styles";
+import {
+  withStyles,
+  WithStyles,
+  createStyles,
+  Theme
+} from "@material-ui/core/styles";
 
-const styles = theme => ({
-  avatar: { margin: "0px 20px 0px auto", cursor: "pointer" },
-  menuOption: { padding: "0px 20px" }
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    avatar: { margin: "0px 20px 0px auto", cursor: "pointer" },
+    menuOption: { padding: "0px 20px" }
+  });
 
-class MenuDrop extends React.Component {
-  static propTypes = {
-    src: PropTypes.string.isRequired,
-    alt: PropTypes.string.isRequired,
-    options: PropTypes.arrayOf(String).isRequired
-  };
+interface Option {
+  href: string;
+  text: string;
+  as?: string;
+}
 
+interface Props extends WithStyles<typeof styles> {
+  options: Option[];
+  src: string;
+  alt: string;
+}
+
+interface State {
+  open: boolean;
+  anchorEl: HTMLElement | undefined;
+}
+
+class MenuDrop extends React.Component<Props, State> {
   state = {
     open: false,
     anchorEl: undefined
@@ -24,7 +41,9 @@ class MenuDrop extends React.Component {
 
   button = undefined;
 
-  handleClick = event => {
+  handleClick = (
+    event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
+  ) => {
     this.setState({ open: true, anchorEl: event.currentTarget });
   };
 

@@ -9,7 +9,7 @@ interface Props {
 }
 
 interface State {
-  tooltipTimeout: any;
+  tooltipTimeout?: number | null;
   timeoutTimer: number;
   showTooltip: boolean;
   tooltipPosition: number[];
@@ -22,7 +22,7 @@ interface INavigator extends Navigator {
 
 class CopyBtn extends Component<Props, State> {
   state = {
-    tooltipTimeout: null,
+    tooltipTimeout: 0,
     timeoutTimer: 300,
     showTooltip: false,
     tooltipPosition: [0, 0]
@@ -31,7 +31,7 @@ class CopyBtn extends Component<Props, State> {
   handleCopyClick = () => {
     this.myNavigator.permissions
       .query({ name: "clipboard-write" })
-      .then(result => {
+      .then((result: any) => {
         if (result.state == "granted" || result.state == "prompt") {
           this.myNavigator.clipboard.writeText(this.props.copyInput).then(
             function() {
@@ -46,7 +46,7 @@ class CopyBtn extends Component<Props, State> {
       });
   };
 
-  handleMouseEnter = e => {
+  handleMouseEnter = (e: React.MouseEvent<Element>) => {
     this.setState({
       showTooltip: true,
       tooltipPosition: [e.clientX, e.clientY]
@@ -55,7 +55,7 @@ class CopyBtn extends Component<Props, State> {
   };
 
   handleMouseLeave = () => {
-    const tooltipTimeout = setTimeout(() => {
+    const tooltipTimeout = window.setTimeout(() => {
       this.setState({ showTooltip: false });
     }, this.state.timeoutTimer);
     this.setState({

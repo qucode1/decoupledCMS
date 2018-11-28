@@ -2,20 +2,34 @@ import React, { Fragment, Component } from "react";
 
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
-import { withStyles } from "@material-ui/core/styles";
+import {
+  withStyles,
+  WithStyles,
+  Theme,
+  createStyles
+} from "@material-ui/core/styles";
 
-import { withContext } from "../../lib/AppContext";
+import { withContext, Value } from "../../lib/AppContext";
 
 import NavigationMenu from "../NavigationMenu/NavigationMenu";
 
-const styles = theme => ({
-  root: {
-    width: theme.spacing.drawerWidth,
-    maxWidth: "75%"
-  }
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    root: {
+      width: theme.spacing.drawerWidth,
+      maxWidth: "75%"
+    }
+  });
 
-class Navigation extends Component {
+interface Props extends WithStyles<typeof styles> {
+  context: Value;
+}
+
+interface State {
+  mobileOpen: boolean;
+}
+
+class Navigation extends Component<Props, State> {
   state = {
     mobileOpen: false
   };

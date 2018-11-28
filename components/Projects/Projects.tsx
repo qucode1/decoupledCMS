@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from "react";
-import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import AddIcon from "@material-ui/icons/Add";
 import ClearIcon from "@material-ui/icons/Clear";
@@ -46,14 +45,14 @@ interface Project {
 }
 
 interface State {
-  projects: Array<Project>;
+  projects: Project[];
   newProjectName: string;
   showNewProjectForm: boolean;
 }
 
 class Projects extends Component<Props, State> {
   state = {
-    projects: [],
+    projects: [] as Project[],
     newProjectName: "",
     showNewProjectForm: false
   };
@@ -148,11 +147,5 @@ class Projects extends Component<Props, State> {
     );
   }
 }
-
-// const Test: React.FunctionComponent = (props: any) => (
-//   <div>
-//     <Projects {...props} />
-//   </div>
-// );
 
 export default withStyles(styles)(Projects);

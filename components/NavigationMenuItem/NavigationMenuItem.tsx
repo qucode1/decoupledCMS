@@ -4,31 +4,45 @@ import NavLink from "next/link";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import { withStyles } from "@material-ui/core/styles";
+import {
+  withStyles,
+  WithStyles,
+  Theme,
+  createStyles
+} from "@material-ui/core/styles";
+import { Palette, PaletteColor } from "@material-ui/core/styles/createPalette";
+import { RouterProps } from "next/router";
 
-const styles = theme => ({
-  navLink: {
-    display: "flex"
-  },
+interface Props {
+  color?: string | undefined;
+  router: RouterProps;
+  to: string;
+  text: string;
+  children: JSX.Element;
+}
 
-  activeNavLink: {
-    backgroundColor: theme.palette.action.hover
-  }
-});
+const NavigationMenuItem = (props: Props) => {
+  const styles = (theme: Theme) => {
+    const paletteItem = theme.palette[
+      props.color as keyof Palette
+    ] as PaletteColor;
 
-class NavigationMenuItem extends Component {
-  styles = theme => ({
-    navLink: {
-      display: "flex"
-    },
-    itemText: {
-      color: this.props.color ? theme.palette[this.props.color].main : "inherit"
-    },
-    activeNavLink: {
-      backgroundColor: theme.palette.action.hover
-    }
-  });
-  div = props => {
+    return createStyles({
+      navLink: {
+        display: "flex"
+      },
+      itemText: {
+        color: props.color ? paletteItem.main : "inherit"
+      },
+      activeNavLink: {
+        backgroundColor: theme.palette.action.hover
+      }
+    });
+  };
+
+  interface InnerProps extends Props, WithStyles<typeof styles> {}
+
+  const div = (props: InnerProps) => {
     return (
       <NavLink href={props.to}>
         <ListItem
@@ -59,10 +73,9 @@ class NavigationMenuItem extends Component {
       </NavLink>
     );
   };
-  StyledDiv = withStyles(this.styles)(this.div);
-  render() {
-    return <this.StyledDiv {...this.props} />;
-  }
-}
+  const StyledDiv = withStyles(styles)(div);
 
-export default withStyles(styles)(withRouter(NavigationMenuItem));
+  return <StyledDiv {...props} />;
+};
+
+export default withRouter(NavigationMenuItem);

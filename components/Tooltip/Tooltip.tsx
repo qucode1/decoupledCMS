@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 interface Props {
-  message: string;
+  message: string | undefined;
   position: number[];
 }
 
