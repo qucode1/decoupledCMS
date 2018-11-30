@@ -34,10 +34,10 @@
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-final-form": "^3.6.5",
-    "react-jss": "^8.6.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@types/react-jss": "^8.6.0",
     "babel-eslint": "^8.2.5",
     "eslint": "^5.0.1",
     "eslint-config-airbnb": "^17.0.0",

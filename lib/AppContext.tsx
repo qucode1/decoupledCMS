@@ -11,6 +11,7 @@ interface State {
   user: any;
   navIsOpen: boolean;
   pageTitle: string;
+  [propType: string]: any;
 }
 
 export interface Value {
@@ -42,7 +43,7 @@ export class AppContextProvider extends Component<{}, State> {
   setContext = async (name: string, obj: any, toLocalStorage = false) => {
     this.setState({
       [name]: obj
-    } as any);
+    });
     if (toLocalStorage) {
       const string = await JSON.stringify(obj);
       localStorage.setItem(name, string);

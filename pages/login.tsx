@@ -20,7 +20,7 @@ const Login: React.FunctionComponent = () => (
     <p>You’ll be logged in for 14 days unless you log out manually.</p>
     <br />
     <Button
-      variant="raised"
+      variant="contained"
       style={{
         borderRadius: "2px",
         textTransform: "none",

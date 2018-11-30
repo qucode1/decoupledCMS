@@ -16,7 +16,7 @@ import NavigationMenu from "../NavigationMenu/NavigationMenu";
 const styles = (theme: Theme) =>
   createStyles({
     root: {
-      width: theme.spacing.drawerWidth,
+      width: theme.mySidebar.width,
       maxWidth: "75%"
     }
   });

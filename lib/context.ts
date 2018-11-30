@@ -6,30 +6,38 @@ import {
 } from "@material-ui/core/styles";
 import primary from "@material-ui/core/colors/indigo";
 import secondary from "@material-ui/core/colors/amber";
-import { Spacing } from "@material-ui/core/styles/spacing";
+import { ThemeOptions } from "@material-ui/core/styles/createMuiTheme";
 
-// interface MySpacing extends Spacing {
-//   drawerWidth: string
-// }
+declare module "@material-ui/core/styles/createMuiTheme" {
+  interface Theme {
+    mySidebar: {
+      width: React.CSSProperties["width"];
+    };
+  }
+  interface ThemeOptions {
+    mySidebar?: {
+      width?: React.CSSProperties["width"];
+    };
+  }
+}
 
-// interface MyTheme extends Theme {
-//   spacing: Spacing & { drawerWidth: string}
-// }
-
-// type Intersection = Theme & MyTheme
-
-const theme = createMuiTheme({
+const createMyTheme = (options?: ThemeOptions) => {
+  return createMuiTheme({
     palette: {
       primary,
       secondary
     },
-    spacing: {
-      drawerWidth: "250px"
+    mySidebar: {
+      width: "250px"
     },
     typography: {
       useNextVariants: true
-    }
-  }) /* as MyTheme */;
+    },
+    ...options
+  });
+};
+
+const theme = createMyTheme();
 
 function createPageContext() {
   return {
@@ -40,14 +48,18 @@ function createPageContext() {
   };
 }
 
+// const isBrowser = typeof window !== 'undefined';
+
 export default function getContext() {
-  if (!process.browser) {
+  const globalAny: any = global;
+
+  if (typeof window === "undefined") {
     return createPageContext();
   }
 
-  if (!global.INIT_MATERIAL_UI) {
-    global.INIT_MATERIAL_UI = createPageContext();
+  if (!globalAny.INIT_MATERIAL_UI) {
+    globalAny.INIT_MATERIAL_UI = createPageContext();
   }
 
-  return global.INIT_MATERIAL_UI;
+  return globalAny.INIT_MATERIAL_UI;
 }
